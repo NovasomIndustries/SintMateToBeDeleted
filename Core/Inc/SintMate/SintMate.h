@@ -8,13 +8,18 @@
 #ifndef INC_SINTMATE_SYSTEM_H_
 #define INC_SINTMATE_SYSTEM_H_
 
+#include <stdio.h>
+#include <string.h>
+
 #include "ili9341.h"
 #include "ili9341_touch.h"
 #include "ili9341_calibrate_touch.h"
+#include "ili9341_background.h"
 #include "fonts.h"
 #include "SpiFlash.h"
+#include "flash_manager.h"
 
-#define	SintMateNAME		"SintMate  "
+#define	SintMateNAME		"SintMate"
 #define	SintMateVERSION		"0.0.1"
 
 extern	TIM_HandleTypeDef htim2;

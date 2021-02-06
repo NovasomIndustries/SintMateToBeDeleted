@@ -17,8 +17,7 @@
 #define		READ_ID_COMMAND			0x9f
 #define		GETSTATUS_COMMAND		0x05
 #define		SECTOR_ERASE_COMMAND	0x20
-#define		PAGE_SIZE				256
-#define		SECTOR_SIZE				4096
+
 
 static uint8_t	flash_SpiTX(uint8_t	Data)
 {

@@ -1,0 +1,2 @@
+ili9341_background.c:12:6:tempwritebkg	32	static
+ili9341_background.c:29:6:LoadBackgroundImage	40	static

@@ -6,9 +6,7 @@
  */
 
 #include "main.h"
-#include <stdio.h>
-#include <string.h>
-#include "flash_manager.h"
+
 /*
  * Each sector is 4096 bytes
  * Sector 0 : header + setup data , see SystemParametersTypeDef
@@ -17,11 +15,7 @@
  * Sector 3 : tab2
  * Sector 4 ..  : user data
  */
-#define	HEADER_SECTOR			0
-#define	PROGRAM_SECTOR			1
-#define	TAB1_SECTOR				2
-#define	TAB2_SECTOR				3
-#define	USERDATA_SECTOR			4
+
 
 void StoreSettingsInFlash(void)
 {
@@ -47,7 +41,7 @@ uint32_t	FlashID;
 	else
 		return -1;
 	LoadSettingsFromFlash();
-	if ( strncmp(SystemParameters.Header,SintMateNAME,10 ) != 0 )
+	if ( strncmp(SystemParameters.Header,SintMateNAME,strlen(SintMateNAME) ) != 0 )
 	{
 		SintMate_SystemSetDefaults();
 		StoreSettingsInFlash();

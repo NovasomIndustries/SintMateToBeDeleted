@@ -15,10 +15,12 @@ extern	void 		flash_EraseSector(uint32_t Sector);
 extern	void 		flash_ReadBytes(uint8_t* pBuffer, uint32_t Address, uint32_t size);
 extern	void 		flash_WriteBytes(uint8_t* pBuffer, uint32_t Address, uint32_t size);
 extern	uint32_t 	flash_ReadID(void);
-extern	uint32_t SetupFlash(void);
+extern	uint32_t 	SetupFlash(void);
 
 
-#define	F128	0x18
-#define	F256	0x19
+#define		F128			0x18
+#define		F256			0x19
+#define		PAGE_SIZE		256
+#define		SECTOR_SIZE		4096
 
 #endif /* INC_SINTMATE_SPIFLASH_H_ */
