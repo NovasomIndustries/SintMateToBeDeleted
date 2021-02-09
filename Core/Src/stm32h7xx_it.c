@@ -226,6 +226,7 @@ void DMA1_Stream0_IRQHandler(void)
   HAL_DMA_IRQHandler(&hdma_spi1_tx);
   /* USER CODE BEGIN DMA1_Stream0_IRQn 1 */
 
+
   /* USER CODE END DMA1_Stream0_IRQn 1 */
 }
 
@@ -239,7 +240,8 @@ void SPI1_IRQHandler(void)
   /* USER CODE END SPI1_IRQn 0 */
   HAL_SPI_IRQHandler(&hspi1);
   /* USER CODE BEGIN SPI1_IRQn 1 */
-
+  SystemVar.lcd_dma_busy = 0;
+  ILI9341_Unselect();
   /* USER CODE END SPI1_IRQn 1 */
 }
 

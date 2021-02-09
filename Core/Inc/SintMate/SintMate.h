@@ -18,11 +18,12 @@
 #include "fonts.h"
 #include "SpiFlash.h"
 #include "flash_manager.h"
+#include "Digits.h"
 
 #define	SintMateNAME		"SintMate"
 #define	SintMateVERSION		"0.0.1"
 
-extern	TIM_HandleTypeDef htim2;
+extern	TIM_HandleTypeDef htim5;
 extern	SPI_HandleTypeDef hspi1;
 extern	SPI_HandleTypeDef hspi6;
 
@@ -41,6 +42,7 @@ typedef struct _SystemParametersTypeDef
 typedef struct _SystemVarDef
 {
 	uint32_t touch_x, touch_y;
+	uint32_t lcd_dma_busy;
 }SystemVarDef;
 
 extern	SystemParametersTypeDef	SystemParameters;
