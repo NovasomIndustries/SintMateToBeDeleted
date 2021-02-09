@@ -48,6 +48,7 @@ SPI_HandleTypeDef hspi6;
 DMA_HandleTypeDef hdma_spi1_tx;
 
 TIM_HandleTypeDef htim5;
+TIM_HandleTypeDef htim7;
 
 /* USER CODE BEGIN PV */
 
@@ -60,13 +61,13 @@ static void MX_DMA_Init(void);
 static void MX_SPI1_Init(void);
 static void MX_SPI6_Init(void);
 static void MX_TIM5_Init(void);
+static void MX_TIM7_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-extern	uint16_t Red[10][DIGIT_SIZE];
 
 /* USER CODE END 0 */
 
@@ -77,8 +78,7 @@ extern	uint16_t Red[10][DIGIT_SIZE];
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-	uint16_t	fillcolor, idx;
-	char		lcdstring[32];
+
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -103,21 +103,22 @@ int main(void)
   MX_SPI1_Init();
   MX_SPI6_Init();
   MX_TIM5_Init();
+  MX_TIM7_Init();
   /* USER CODE BEGIN 2 */
   Init_SintMate();
-  idx = 0;
+  InitCounter();
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-
-	  ILI9341_DrawImage(20, 180, DIGIT_WIDTH, DIGIT_HEIGHT-1, Yellow[idx]);
-	  idx++;
-	  if ( idx > 9 )
-		  idx = 0;
-	  HAL_Delay(500);
+	  if ( SystemVar.counter_flag == 1 )
+	  {
+			SystemVar.counter_flag = 0;
+			DecrementCounter();
+	  }
+	  /*
 	  if ( touch_flag == 1 )
 	  		{
 	  			if ( ILI9341_GetTouch(&SystemVar.touch_x,&SystemVar.touch_y) != 0 )
@@ -141,6 +142,7 @@ int main(void)
 	  			}
 	  			touch_flag = 0;
 	  		}
+	  		*/
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -245,7 +247,7 @@ static void MX_SPI1_Init(void)
   hspi1.Init.CLKPolarity = SPI_POLARITY_LOW;
   hspi1.Init.CLKPhase = SPI_PHASE_1EDGE;
   hspi1.Init.NSS = SPI_NSS_SOFT;
-  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_16;
+  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_8;
   hspi1.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi1.Init.TIMode = SPI_TIMODE_DISABLE;
   hspi1.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
@@ -364,6 +366,44 @@ static void MX_TIM5_Init(void)
 
   /* USER CODE END TIM5_Init 2 */
   HAL_TIM_MspPostInit(&htim5);
+
+}
+
+/**
+  * @brief TIM7 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM7_Init(void)
+{
+
+  /* USER CODE BEGIN TIM7_Init 0 */
+
+  /* USER CODE END TIM7_Init 0 */
+
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+  /* USER CODE BEGIN TIM7_Init 1 */
+
+  /* USER CODE END TIM7_Init 1 */
+  htim7.Instance = TIM7;
+  htim7.Init.Prescaler = 2400;
+  htim7.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim7.Init.Period = 10000;
+  htim7.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim7) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim7, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM7_Init 2 */
+
+  /* USER CODE END TIM7_Init 2 */
 
 }
 

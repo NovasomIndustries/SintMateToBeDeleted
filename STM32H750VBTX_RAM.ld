@@ -51,6 +51,11 @@ MEMORY
 /* Sections */
 SECTIONS
 {
+  .digit_buffers(NOLOAD) : {
+    . = ALIGN(4);
+    *(.digit_buffers*)
+  } > RAM_D2
+  
   /* The startup code into "RAM_D1" Ram type memory */
   .isr_vector :
   {

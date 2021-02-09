@@ -24,7 +24,6 @@ uint32_t	xpos;
 	ILI9341_Init();
 	ILI9341_FillScreen(ILI9341_BLACK);
 	HAL_TIM_PWM_Start(&htim5, TIM_CHANNEL_1);
-	HAL_Delay(1000);
 	if ( SystemParameters.touch_is_calibrated == 0 )
 	{
 		ILI9341_calibrate_touch();
@@ -35,13 +34,8 @@ uint32_t	xpos;
 	ILI9341_WriteString(xpos, 2*10+2*18, SintMateNAME, Font_16x26, ILI9341_BLUE, ILI9341_BLACK);
 	xpos = (ILI9341_WIDTH - strlen(NameVersion)*11)/2;
 	ILI9341_WriteString(xpos, 3*10+3*18, NameVersion, Font_11x18, ILI9341_BLUE, ILI9341_BLACK);
-	HAL_Delay(1000);
-	//ILI9341_FillScreen(ILI9341_RED);
-	//tempwritebkg(0);
-	//ILI9341_FillScreen(ILI9341_BLACK);
-	HAL_Delay(1000);
 	StoreDigitsInFlash();
 	GetDigitsFromFlash();
-	LoadBackgroundImage(0);
+	HAL_TIM_Base_Start_IT(&htim7);
 }
 

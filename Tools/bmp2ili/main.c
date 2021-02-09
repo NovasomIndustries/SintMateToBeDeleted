@@ -150,6 +150,11 @@ int         i,width,height;
         sprintf(file_out,"/Devel/Stm32Sw/SintMate/Core/Src/SintMate/Images/Yellow/D%dyellow.c",i);
         sprintf(element_name,"D%dyellow",i);
         read_and_convert(file_in,file_out,element_name,&width,&height);
+
+        sprintf(file_in,"/Devel/Stm32Sw/SintMate/Core/Src/SintMate/SrcImages/D%dblue.bmp",i);
+        sprintf(file_out,"/Devel/Stm32Sw/SintMate/Core/Src/SintMate/Images/Blue/D%dblue.c",i);
+        sprintf(element_name,"D%dblue",i);
+        read_and_convert(file_in,file_out,element_name,&width,&height);
     }
     sprintf(file_in,"/Devel/Stm32Sw/SintMate/Core/Src/SintMate/SrcImages/RedOFF.bmp");
     sprintf(file_out,"/Devel/Stm32Sw/SintMate/Core/Src/SintMate/Images/Red/RedOFF.c");

@@ -12,10 +12,13 @@
 #define	DIGITYELLOW_IDX		2
 #define	DIGIT_TYPESNUMBER	3
 
-uint16_t Red[10][DIGIT_SIZE];
-uint16_t Green[10][DIGIT_SIZE];
-uint16_t Yellow[10][DIGIT_SIZE];
-
+DIGIT_BUFFERS		__attribute__ ((aligned (4)))	uint16_t Red[10][DIGIT_SIZE];
+DIGIT_BUFFERS		__attribute__ ((aligned (4)))	uint16_t Green[10][DIGIT_SIZE];
+DIGIT_BUFFERS		__attribute__ ((aligned (4)))	uint16_t Yellow[10][DIGIT_SIZE];
+/*
+DIGIT_BUFFERS		__attribute__ ((aligned (4)))	uint16_t Blue[10][DIGIT_SIZE];
+DIGIT_BUFFERS		__attribute__ ((aligned (4)))	uint16_t White[10][DIGIT_SIZE];
+*/
 //#define	WRITE	1
 
 #ifdef	WRITE
@@ -56,11 +59,9 @@ uint16_t	*ptr_array[10] =
 		D8yellow,
 		D9yellow
 };
-#endif
 
 void StoreDigitsInFlash(void)
 {
-#ifdef	WRITE
 uint32_t 	i,numsect2erase;
 
 	numsect2erase = DIGITSECTORPERCOLOR;
@@ -68,8 +69,12 @@ uint32_t 	i,numsect2erase;
 		flash_EraseSector(i+DIGITYELLOW_BASE);
 	for(i=0;i<10;i++)
 		flash_WriteBytes((uint8_t *)ptr_array[i] ,flash_SectorToAddress(i*2+DIGITYELLOW_BASE),DIGIT_SIZE*2);
-#endif
 }
+#else
+void StoreDigitsInFlash(void)
+{
+}
+#endif
 
 void GetDigitsFromFlash(void)
 {

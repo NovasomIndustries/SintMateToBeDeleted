@@ -14,16 +14,20 @@
 #include "ili9341.h"
 #include "ili9341_touch.h"
 #include "ili9341_calibrate_touch.h"
-#include "ili9341_background.h"
 #include "fonts.h"
 #include "SpiFlash.h"
 #include "flash_manager.h"
 #include "Digits.h"
+#include "DigitsBitmap.h"
+#include "SintmateDownCounter.h"
 
 #define	SintMateNAME		"SintMate"
 #define	SintMateVERSION		"0.0.1"
 
+#define 	DIGIT_BUFFERS 		__attribute__((section(".digit_buffers")))
+
 extern	TIM_HandleTypeDef htim5;
+extern	TIM_HandleTypeDef htim7;
 extern	SPI_HandleTypeDef hspi1;
 extern	SPI_HandleTypeDef hspi6;
 
@@ -41,8 +45,10 @@ typedef struct _SystemParametersTypeDef
 
 typedef struct _SystemVarDef
 {
-	uint32_t touch_x, touch_y;
-	uint32_t lcd_dma_busy;
+	uint32_t 				touch_x, touch_y;
+	uint32_t 				lcd_dma_busy;
+	uint32_t 				counter;
+	uint32_t 				counter_flag;
 }SystemVarDef;
 
 extern	SystemParametersTypeDef	SystemParameters;

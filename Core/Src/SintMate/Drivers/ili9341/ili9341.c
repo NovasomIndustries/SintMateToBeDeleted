@@ -435,6 +435,8 @@ void ILI9341_DrawImage(uint16_t x, uint16_t y, uint16_t w, uint16_t h, const uin
     if((x + w - 1) >= ILI9341_WIDTH) return;
     if((y + h - 1) >= ILI9341_HEIGHT) return;
 
+	while(SystemVar.lcd_dma_busy == 1);
+
     ILI9341_Select();
     ILI9341_SetAddressWindow(x, y, x+w-1, y+h-1);
     ILI9341_WriteDmaData((uint8_t*)data, sizeof(uint16_t)*w*h);
