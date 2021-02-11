@@ -88,7 +88,7 @@ unsigned short  bitsPerPixel,pixel;
     printf( "File %s written\n",outfile ) ;
 }
 
-void create_include_file(int width , int height)
+void create_include_file(int width , int height,int buttonwidth , int buttonheight, int iconswidth , int iconsheight)
 {
 char        file_out[64];
 int         i;
@@ -116,12 +116,30 @@ int         i;
     fprintf(fpout,"#define  DIGIT_WIDTH   %d\n",width);
     fprintf(fpout,"#define  DIGIT_HEIGHT  %d\n",height);
     fprintf(fpout,"#define  DIGIT_SIZE    %d\n",width*height);
+    fprintf(fpout,"#define  BUTTONS_WIDTH   %d\n",buttonwidth);
+    fprintf(fpout,"#define  BUTTONS_HEIGHT  %d\n",buttonheight);
+    fprintf(fpout,"#define  BUTTONS_SIZE  %d\n",buttonwidth*buttonheight);
+    fprintf(fpout,"#define  ICONS_WIDTH   %d\n",iconswidth);
+    fprintf(fpout,"#define  ICONS_HEIGHT  %d\n",iconsheight);
+    fprintf(fpout,"#define  ICONS_SIZE  %d\n",iconswidth*iconsheight);
     fprintf(fpout,"\n");
     fprintf(fpout,"extern   uint16_t Red[10][DIGIT_SIZE];\n");
     fprintf(fpout,"extern   uint16_t Green[10][DIGIT_SIZE];\n");
     fprintf(fpout,"extern   uint16_t Yellow[10][DIGIT_SIZE];\n");
     fprintf(fpout,"extern   uint16_t Blue[10][DIGIT_SIZE];\n");
     fprintf(fpout,"extern   uint16_t White[10][DIGIT_SIZE];\n");
+    fprintf(fpout,"extern   uint16_t DigitOFF[DIGIT_SIZE];\n");
+    fprintf(fpout,"\n");
+    fprintf(fpout,"extern   uint16_t increase[];\n");
+    fprintf(fpout,"extern   uint16_t decrease[];\n");
+    fprintf(fpout,"extern   uint16_t increase_disabled[];\n");
+    fprintf(fpout,"extern   uint16_t decrease_disabled[];\n");
+    fprintf(fpout,"extern   uint16_t home[];\n");
+    fprintf(fpout,"extern   uint16_t settings[];\n");
+    fprintf(fpout,"extern   uint16_t home_disabled[];\n");
+    fprintf(fpout,"extern   uint16_t settings_disabled[];\n");
+    fprintf(fpout,"extern   uint16_t play[];\n");
+    fprintf(fpout,"extern   uint16_t stop[];\n");
     fprintf(fpout,"\n");
     fprintf(fpout,"#endif /*INC_SINTMATE_DIGIT_H_ */\n");
     fclose(fpout);
@@ -133,6 +151,7 @@ int main (int argc, char **argv)
 {
 char        file_in[128],file_out[128],element_name[128];
 int         i,width,height;
+int         buttonwidth , buttonheight,  iconswidth ,  iconsheight;
 
     for(i=0;i<10;i++)
     {
@@ -160,6 +179,63 @@ int         i,width,height;
     sprintf(file_out,"/Devel/Stm32Sw/SintMate/Core/Src/SintMate/Images/Red/RedOFF.c");
     sprintf(element_name,"RedOFF");
     read_and_convert(file_in,file_out,element_name,&width,&height);
-    create_include_file(width , height);
+/*
+    sprintf(file_in,"/Devel/Stm32Sw/SintMate/Core/Src/SintMate/SrcImages/start_button.bmp");
+    sprintf(file_out,"/Devel/Stm32Sw/SintMate/Core/Src/SintMate/Images/Buttons/start_button.c");
+    sprintf(element_name,"start_button");
+    read_and_convert(file_in,file_out,element_name,&buttonwidth,&buttonheight);
+*/
+    sprintf(file_in,"/Devel/Stm32Sw/SintMate/Core/Src/SintMate/SrcImages/increase.bmp");
+    sprintf(file_out,"/Devel/Stm32Sw/SintMate/Core/Src/SintMate/Images/Buttons/increase.c");
+    sprintf(element_name,"increase");
+    read_and_convert(file_in,file_out,element_name,&iconswidth,&iconsheight);
+
+    sprintf(file_in,"/Devel/Stm32Sw/SintMate/Core/Src/SintMate/SrcImages/decrease.bmp");
+    sprintf(file_out,"/Devel/Stm32Sw/SintMate/Core/Src/SintMate/Images/Buttons/decrease.c");
+    sprintf(element_name,"decrease");
+    read_and_convert(file_in,file_out,element_name,&iconswidth,&iconsheight);
+
+    sprintf(file_in,"/Devel/Stm32Sw/SintMate/Core/Src/SintMate/SrcImages/increase_disabled.bmp");
+    sprintf(file_out,"/Devel/Stm32Sw/SintMate/Core/Src/SintMate/Images/Buttons/increase_disabled.c");
+    sprintf(element_name,"increase_disabled");
+    read_and_convert(file_in,file_out,element_name,&iconswidth,&iconsheight);
+
+    sprintf(file_in,"/Devel/Stm32Sw/SintMate/Core/Src/SintMate/SrcImages/decrease_disabled.bmp");
+    sprintf(file_out,"/Devel/Stm32Sw/SintMate/Core/Src/SintMate/Images/Buttons/decrease_disabled.c");
+    sprintf(element_name,"decrease_disabled");
+    read_and_convert(file_in,file_out,element_name,&iconswidth,&iconsheight);
+
+    sprintf(file_in,"/Devel/Stm32Sw/SintMate/Core/Src/SintMate/SrcImages/play.bmp");
+    sprintf(file_out,"/Devel/Stm32Sw/SintMate/Core/Src/SintMate/Images/Buttons/play.c");
+    sprintf(element_name,"play");
+    read_and_convert(file_in,file_out,element_name,&buttonwidth,&buttonheight);
+
+    sprintf(file_in,"/Devel/Stm32Sw/SintMate/Core/Src/SintMate/SrcImages/stop.bmp");
+    sprintf(file_out,"/Devel/Stm32Sw/SintMate/Core/Src/SintMate/Images/Buttons/stop.c");
+    sprintf(element_name,"stop");
+    read_and_convert(file_in,file_out,element_name,&buttonwidth,&buttonheight);
+
+    sprintf(file_in,"/Devel/Stm32Sw/SintMate/Core/Src/SintMate/SrcImages/home.bmp");
+    sprintf(file_out,"/Devel/Stm32Sw/SintMate/Core/Src/SintMate/Images/Buttons/home.c");
+    sprintf(element_name,"home");
+    read_and_convert(file_in,file_out,element_name,&iconswidth,&iconsheight);
+
+    sprintf(file_in,"/Devel/Stm32Sw/SintMate/Core/Src/SintMate/SrcImages/home_disabled.bmp");
+    sprintf(file_out,"/Devel/Stm32Sw/SintMate/Core/Src/SintMate/Images/Buttons/home_disabled.c");
+    sprintf(element_name,"home_disabled");
+    read_and_convert(file_in,file_out,element_name,&iconswidth,&iconsheight);
+
+    sprintf(file_in,"/Devel/Stm32Sw/SintMate/Core/Src/SintMate/SrcImages/settings.bmp");
+    sprintf(file_out,"/Devel/Stm32Sw/SintMate/Core/Src/SintMate/Images/Buttons/settings.c");
+    sprintf(element_name,"settings");
+    read_and_convert(file_in,file_out,element_name,&iconswidth,&iconsheight);
+
+    sprintf(file_in,"/Devel/Stm32Sw/SintMate/Core/Src/SintMate/SrcImages/settings_disabled.bmp");
+    sprintf(file_out,"/Devel/Stm32Sw/SintMate/Core/Src/SintMate/Images/Buttons/settings_disabled.c");
+    sprintf(element_name,"settings_disabled");
+    read_and_convert(file_in,file_out,element_name,&iconswidth,&iconsheight);
+
+
+    create_include_file(width , height, buttonwidth, buttonheight,iconswidth,iconsheight);
     return 0;
 }

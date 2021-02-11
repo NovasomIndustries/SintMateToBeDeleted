@@ -10,6 +10,7 @@
 
 extern	void StoreDigitsInFlash(void);
 extern	void GetDigitsFromFlash(void);
+extern	uint16_t StartButton[];
 
 
 #endif /* INC_SINTMATE_DIGITSBITMAP_H_ */

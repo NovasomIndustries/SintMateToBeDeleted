@@ -59,14 +59,32 @@ extern uint16_t D9blue[];
 extern uint16_t D9white[];
 extern uint16_t RedOFF[];
 
-#define  DIGIT_WIDTH   48
-#define  DIGIT_HEIGHT  80
-#define  DIGIT_SIZE    3840
+#define  DIGIT_WIDTH   40
+#define  DIGIT_HEIGHT  72
+#define  DIGIT_SIZE    2880
+#define  BUTTONS_WIDTH   96
+#define  BUTTONS_HEIGHT  96
+#define  BUTTONS_SIZE  9216
+#define  ICONS_WIDTH   48
+#define  ICONS_HEIGHT  48
+#define  ICONS_SIZE  2304
 
 extern   uint16_t Red[10][DIGIT_SIZE];
 extern   uint16_t Green[10][DIGIT_SIZE];
 extern   uint16_t Yellow[10][DIGIT_SIZE];
 extern   uint16_t Blue[10][DIGIT_SIZE];
 extern   uint16_t White[10][DIGIT_SIZE];
+extern   uint16_t DigitOFF[DIGIT_SIZE];
+
+extern   uint16_t increase[];
+extern   uint16_t decrease[];
+extern   uint16_t increase_disabled[];
+extern   uint16_t decrease_disabled[];
+extern   uint16_t home[];
+extern   uint16_t settings[];
+extern   uint16_t home_disabled[];
+extern   uint16_t settings_disabled[];
+extern   uint16_t play[];
+extern   uint16_t stop[];
 
 #endif /*INC_SINTMATE_DIGIT_H_ */

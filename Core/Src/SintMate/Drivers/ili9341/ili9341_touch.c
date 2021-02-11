@@ -5,11 +5,13 @@
 #define READ_X 0xD0
 #define READ_Y 0x90
 
-uint32_t	touch_flag = 0;
 
 void ILI9341_TouchCallback(void)
 {
-	touch_flag = 1;
+	if ( SystemVar.touch_pen_down == 0 )
+		SystemVar.touch_flag = 1;
+	SystemVar.touch_pen_down = 1;
+	SystemVar.touch_disable_window = TOUCH_DISABLE_WINDOW;
 }
 
 static void ILI9341_TouchSelect(void)
@@ -33,6 +35,8 @@ uint32_t ILI9341_TouchGetCoordinates(uint32_t* raw_x, uint32_t* raw_y)
     static const uint8_t cmd_read_y[] = { READ_Y };
     static const uint8_t zeroes_tx[] = { 0x00, 0x00 };
     uint32_t	mbr , touch_mbr;
+
+	while( SystemVar.lcd_dma_busy == 1 );
 
     /* set prescaler to 128 */
     mbr = hspi1.Instance->CFG1;

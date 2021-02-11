@@ -57,8 +57,7 @@
 #define	DIGITRED_BASE			0x10
 #define	DIGITGREEN_BASE			0x30
 #define	DIGITYELLOW_BASE		0x50
-#define	DIGITBLUE_BASE			0x70
-#define	DIGIT_MAXSIZE			SECTOR_SIZE
+#define	DIGITOFF_BASE			0x70
 
 
 extern	uint32_t SetupFlash(void);

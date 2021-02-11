@@ -35,10 +35,23 @@ static void ILI9341_WriteData(uint8_t* buff, size_t buff_size) {
     }
 }
 
-static void ILI9341_WriteDmaData(uint8_t* buff, size_t buff_size) {
+static void ILI9341_WriteDmaData(uint8_t* buff, size_t buff_size)
+{
+	SintMateDebug(0);
+	while(SystemVar.lcd_dma_busy == 1)
+		SintMateDebug(1);
+	SintMateDebug(0);
+
 	SystemVar.lcd_dma_busy = 1;
     HAL_GPIO_WritePin(ILI9341_DC_GPIO_Port, ILI9341_DC_Pin, GPIO_PIN_SET);
     HAL_SPI_Transmit_DMA(&hspi1, buff, buff_size);
+}
+
+void SPI_TxEnd_Callback(void)
+{
+	ILI9341_Unselect();
+	SystemVar.lcd_dma_busy = 0;
+	HAL_NVIC_EnableIRQ(EXTI0_IRQn);
 }
 
 static void ILI9341_SetAddressWindow(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1) {
@@ -435,8 +448,12 @@ void ILI9341_DrawImage(uint16_t x, uint16_t y, uint16_t w, uint16_t h, const uin
     if((x + w - 1) >= ILI9341_WIDTH) return;
     if((y + h - 1) >= ILI9341_HEIGHT) return;
 
-	while(SystemVar.lcd_dma_busy == 1);
+	SintMateDebug(0);
+	while(SystemVar.lcd_dma_busy == 1)
+		SintMateDebug(1);
+	SintMateDebug(0);
 
+	HAL_NVIC_DisableIRQ(EXTI0_IRQn);
     ILI9341_Select();
     ILI9341_SetAddressWindow(x, y, x+w-1, y+h-1);
     ILI9341_WriteDmaData((uint8_t*)data, sizeof(uint16_t)*w*h);

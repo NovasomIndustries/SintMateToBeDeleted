@@ -46,7 +46,7 @@ char		calibration_string[CALIBRATION_STRING_LEN];
 	for(i=0;i<5;i++)
 	{
 		ILI9341_draw_calibrate(i,ILI9341_WHITE);
-		while ( touch_flag == 0 );
+		while ( SystemVar.touch_flag == 0 );
 		ILI9341_draw_calibrate(i,ILI9341_BLUE);
 		if ( ILI9341_TouchGetCoordinates(&raw_calibration_touch_x[i],&raw_calibration_touch_y[i]) != 0 )
 		{
@@ -55,7 +55,7 @@ char		calibration_string[CALIBRATION_STRING_LEN];
 			HAL_Delay(1000);
 			ILI9341_FillRectangle(CALIBRATION_STRING_XPOS, CALIBRATION_STRING_YPOS, CALIBRATION_STRING_LEN*7, 10, ILI9341_BLACK);
 		}
-		touch_flag = 0;
+		SystemVar.touch_flag = 0;
 		ILI9341_draw_calibrate(i,ILI9341_GREEN);
 	}
 	ILI9341_FillScreen(ILI9341_BLACK);
