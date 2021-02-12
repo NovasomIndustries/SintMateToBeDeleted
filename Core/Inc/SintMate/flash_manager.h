@@ -53,11 +53,16 @@
 
 #define	HEADER_SECTOR			0
 #define	PROGRAM_SECTOR			1
+#define	DUMMY_PAGE0				8
+#define	DUMMY_PAGE1				9
+#define	DUMMY_PAGE2				0x0a
+#define	DUMMY_PAGE3				0x0b
 #define	DIGITSECTORPERCOLOR		32
 #define	DIGITRED_BASE			0x10
 #define	DIGITGREEN_BASE			0x30
 #define	DIGITYELLOW_BASE		0x50
 #define	DIGITOFF_BASE			0x70
+#define	LOGO_BASE				0x80
 
 
 extern	uint32_t SetupFlash(void);

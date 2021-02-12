@@ -26,8 +26,6 @@
 /* USER CODE END Includes */
 extern DMA_HandleTypeDef hdma_spi1_tx;
 
-extern DMA_HandleTypeDef hdma_tim16_ch1;
-
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN TD */
 
@@ -280,26 +278,6 @@ void HAL_TIM_Base_MspInit(TIM_HandleTypeDef* htim_base)
   /* USER CODE END TIM16_MspInit 0 */
     /* Peripheral clock enable */
     __HAL_RCC_TIM16_CLK_ENABLE();
-
-    /* TIM16 DMA Init */
-    /* TIM16_CH1 Init */
-    hdma_tim16_ch1.Instance = DMA1_Stream1;
-    hdma_tim16_ch1.Init.Request = DMA_REQUEST_TIM16_CH1;
-    hdma_tim16_ch1.Init.Direction = DMA_PERIPH_TO_MEMORY;
-    hdma_tim16_ch1.Init.PeriphInc = DMA_PINC_DISABLE;
-    hdma_tim16_ch1.Init.MemInc = DMA_MINC_DISABLE;
-    hdma_tim16_ch1.Init.PeriphDataAlignment = DMA_PDATAALIGN_HALFWORD;
-    hdma_tim16_ch1.Init.MemDataAlignment = DMA_MDATAALIGN_HALFWORD;
-    hdma_tim16_ch1.Init.Mode = DMA_NORMAL;
-    hdma_tim16_ch1.Init.Priority = DMA_PRIORITY_LOW;
-    hdma_tim16_ch1.Init.FIFOMode = DMA_FIFOMODE_DISABLE;
-    if (HAL_DMA_Init(&hdma_tim16_ch1) != HAL_OK)
-    {
-      Error_Handler();
-    }
-
-    __HAL_LINKDMA(htim_base,hdma[TIM_DMA_ID_CC1],hdma_tim16_ch1);
-
   /* USER CODE BEGIN TIM16_MspInit 1 */
 
   /* USER CODE END TIM16_MspInit 1 */
@@ -404,9 +382,6 @@ void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef* htim_base)
   /* USER CODE END TIM16_MspDeInit 0 */
     /* Peripheral clock disable */
     __HAL_RCC_TIM16_CLK_DISABLE();
-
-    /* TIM16 DMA DeInit */
-    HAL_DMA_DeInit(htim_base->hdma[TIM_DMA_ID_CC1]);
   /* USER CODE BEGIN TIM16_MspDeInit 1 */
 
   /* USER CODE END TIM16_MspDeInit 1 */

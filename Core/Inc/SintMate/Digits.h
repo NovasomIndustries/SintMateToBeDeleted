@@ -68,6 +68,9 @@ extern uint16_t RedOFF[];
 #define  ICONS_WIDTH   48
 #define  ICONS_HEIGHT  48
 #define  ICONS_SIZE  2304
+#define  LOGO_WIDTH   240
+#define  LOGO_HEIGHT  42
+#define  LOGO_SIZE  10080
 
 extern   uint16_t Red[10][DIGIT_SIZE];
 extern   uint16_t Green[10][DIGIT_SIZE];
@@ -75,6 +78,7 @@ extern   uint16_t Yellow[10][DIGIT_SIZE];
 extern   uint16_t Blue[10][DIGIT_SIZE];
 extern   uint16_t White[10][DIGIT_SIZE];
 extern   uint16_t DigitOFF[DIGIT_SIZE];
+extern   uint16_t SintmateLogo[LOGO_SIZE];
 
 extern   uint16_t increase[];
 extern   uint16_t decrease[];

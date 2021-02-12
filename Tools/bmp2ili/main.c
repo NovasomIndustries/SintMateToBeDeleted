@@ -85,10 +85,11 @@ unsigned short  bitsPerPixel,pixel;
     fclose(fpout);
     *dwidth = width;
     *dheight = height;
+    printf( "width %d height %d\n",width,height ) ;
     printf( "File %s written\n",outfile ) ;
 }
 
-void create_include_file(int width , int height,int buttonwidth , int buttonheight, int iconswidth , int iconsheight)
+void create_include_file(int width , int height,int buttonwidth , int buttonheight, int iconswidth , int iconsheight, int logowidth, int logoheight)
 {
 char        file_out[64];
 int         i;
@@ -122,6 +123,9 @@ int         i;
     fprintf(fpout,"#define  ICONS_WIDTH   %d\n",iconswidth);
     fprintf(fpout,"#define  ICONS_HEIGHT  %d\n",iconsheight);
     fprintf(fpout,"#define  ICONS_SIZE  %d\n",iconswidth*iconsheight);
+    fprintf(fpout,"#define  LOGO_WIDTH   %d\n",logowidth);
+    fprintf(fpout,"#define  LOGO_HEIGHT  %d\n",logoheight);
+    fprintf(fpout,"#define  LOGO_SIZE  %d\n",logowidth*logoheight);
     fprintf(fpout,"\n");
     fprintf(fpout,"extern   uint16_t Red[10][DIGIT_SIZE];\n");
     fprintf(fpout,"extern   uint16_t Green[10][DIGIT_SIZE];\n");
@@ -129,6 +133,7 @@ int         i;
     fprintf(fpout,"extern   uint16_t Blue[10][DIGIT_SIZE];\n");
     fprintf(fpout,"extern   uint16_t White[10][DIGIT_SIZE];\n");
     fprintf(fpout,"extern   uint16_t DigitOFF[DIGIT_SIZE];\n");
+    fprintf(fpout,"extern   uint16_t SintmateLogo[LOGO_SIZE];\n");
     fprintf(fpout,"\n");
     fprintf(fpout,"extern   uint16_t increase[];\n");
     fprintf(fpout,"extern   uint16_t decrease[];\n");
@@ -151,7 +156,7 @@ int main (int argc, char **argv)
 {
 char        file_in[128],file_out[128],element_name[128];
 int         i,width,height;
-int         buttonwidth , buttonheight,  iconswidth ,  iconsheight;
+int         buttonwidth , buttonheight,  iconswidth ,  iconsheight, logowidth , logoheight;
 
     for(i=0;i<10;i++)
     {
@@ -179,12 +184,7 @@ int         buttonwidth , buttonheight,  iconswidth ,  iconsheight;
     sprintf(file_out,"/Devel/Stm32Sw/SintMate/Core/Src/SintMate/Images/Red/RedOFF.c");
     sprintf(element_name,"RedOFF");
     read_and_convert(file_in,file_out,element_name,&width,&height);
-/*
-    sprintf(file_in,"/Devel/Stm32Sw/SintMate/Core/Src/SintMate/SrcImages/start_button.bmp");
-    sprintf(file_out,"/Devel/Stm32Sw/SintMate/Core/Src/SintMate/Images/Buttons/start_button.c");
-    sprintf(element_name,"start_button");
-    read_and_convert(file_in,file_out,element_name,&buttonwidth,&buttonheight);
-*/
+
     sprintf(file_in,"/Devel/Stm32Sw/SintMate/Core/Src/SintMate/SrcImages/increase.bmp");
     sprintf(file_out,"/Devel/Stm32Sw/SintMate/Core/Src/SintMate/Images/Buttons/increase.c");
     sprintf(element_name,"increase");
@@ -235,7 +235,12 @@ int         buttonwidth , buttonheight,  iconswidth ,  iconsheight;
     sprintf(element_name,"settings_disabled");
     read_and_convert(file_in,file_out,element_name,&iconswidth,&iconsheight);
 
+    sprintf(file_in,"/Devel/Stm32Sw/SintMate/Core/Src/SintMate/SrcImages/SintMateLogo.bmp");
+    sprintf(file_out,"/Devel/Stm32Sw/SintMate/Core/Src/SintMate/Images/Logo/SintMateLogo.c");
+    sprintf(element_name,"SintMateLogo");
+    read_and_convert(file_in,file_out,element_name,&logowidth,&logoheight);
 
-    create_include_file(width , height, buttonwidth, buttonheight,iconswidth,iconsheight);
+
+    create_include_file(width , height, buttonwidth, buttonheight,iconswidth,iconsheight,logowidth,logoheight);
     return 0;
 }

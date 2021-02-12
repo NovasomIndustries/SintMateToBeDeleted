@@ -50,7 +50,6 @@ DMA_HandleTypeDef hdma_spi1_tx;
 TIM_HandleTypeDef htim5;
 TIM_HandleTypeDef htim7;
 TIM_HandleTypeDef htim16;
-DMA_HandleTypeDef hdma_tim16_ch1;
 
 /* USER CODE BEGIN PV */
 
@@ -120,6 +119,16 @@ int main(void)
   while (1)
   {
 	  SintMateLoop();
+	  //DoNumberOfSteps(4);
+	  /*
+		HAL_TIM_OC_Start(&htim16, TIM_CHANNEL_1);
+		HAL_Delay(100);
+		//HAL_TIM_OC_Stop(&htim16, TIM_CHANNEL_1);
+		 *
+		 */
+#ifdef	WRITE
+		HAL_Delay(200);
+#endif
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -405,9 +414,9 @@ static void MX_TIM16_Init(void)
   htim16.Instance = TIM16;
   htim16.Init.Prescaler = 8571;
   htim16.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim16.Init.Period = 100;
+  htim16.Init.Period = 50;
   htim16.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-  htim16.Init.RepetitionCounter = 0;
+  htim16.Init.RepetitionCounter = 7;
   htim16.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_Base_Init(&htim16) != HAL_OK)
   {
@@ -417,12 +426,16 @@ static void MX_TIM16_Init(void)
   {
     Error_Handler();
   }
+  if (HAL_TIM_OnePulse_Init(&htim16, TIM_OPMODE_SINGLE) != HAL_OK)
+  {
+    Error_Handler();
+  }
   sConfigOC.OCMode = TIM_OCMODE_TOGGLE;
-  sConfigOC.Pulse = 50;
-  sConfigOC.OCPolarity = TIM_OCPOLARITY_LOW;
+  sConfigOC.Pulse = 25;
+  sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
   sConfigOC.OCNPolarity = TIM_OCNPOLARITY_HIGH;
   sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
-  sConfigOC.OCIdleState = TIM_OCIDLESTATE_SET;
+  sConfigOC.OCIdleState = TIM_OCIDLESTATE_RESET;
   sConfigOC.OCNIdleState = TIM_OCNIDLESTATE_RESET;
   if (HAL_TIM_OC_ConfigChannel(&htim16, &sConfigOC, TIM_CHANNEL_1) != HAL_OK)
   {
@@ -460,9 +473,6 @@ static void MX_DMA_Init(void)
   /* DMA1_Stream0_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA1_Stream0_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(DMA1_Stream0_IRQn);
-  /* DMA1_Stream1_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(DMA1_Stream1_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(DMA1_Stream1_IRQn);
 
 }
 

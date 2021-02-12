@@ -19,6 +19,8 @@
 #define	HOME_BUTTON_POSX			190
 #define	HOME_BUTTON_POSY			SETTINGS_BUTTON_POSY
 
+
+
 extern	void DrawIdleButtons(void);
 extern	void DrawPlayButtons(void);
 

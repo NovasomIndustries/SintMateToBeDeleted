@@ -66,8 +66,8 @@ char		calibration_string[CALIBRATION_STRING_LEN];
 	ymin = (raw_calibration_touch_y[2] + raw_calibration_touch_y[3]) / 2;
 	SystemParameters.touch_x_minimum = xmin;
 	SystemParameters.touch_y_minimum = ymin;
-	SystemParameters.touch_x_correction = (xmax - xmin) / ILI9341_WIDTH;
-	SystemParameters.touch_y_correction = (ymax - ymin) / ILI9341_HEIGHT;
+	SystemParameters.touch_x_correction = (xmax - xmin) / (ILI9341_WIDTH  - 2*TOUCH_OFFSET_X_Y);
+	SystemParameters.touch_y_correction = (ymax - ymin) / (ILI9341_HEIGHT - 2*TOUCH_OFFSET_X_Y);
 	SystemParameters.touch_is_calibrated = 1;
 
 }

@@ -7,10 +7,10 @@
 
 
 #include "main.h"
-
+/*
 static	uint32_t	number_of_pulses;
-static	uint32_t	step_number,pulses_per_second;
-
+static	uint32_t	pulses_per_second;
+*/
 void StepperCallback(void)
 {
 
@@ -18,24 +18,42 @@ void StepperCallback(void)
 
 void StepperInit(void)
 {
-
 }
 
 void DoSteps(void)
 {
-	pulses_per_second = (NUM_STEPS_PER_ROTATION * SystemParameters.step_rpm) / 60; // that 60 is for second ...
-	number_of_pulses = step_number*4 * SystemVar.DownCounter;
-	HAL_TIM_OC_Start_DMA(&htim16, TIM_CHANNEL_1, &number_of_pulses, 32);
+uint32_t	CR1_reg;
+
+	CR1_reg = htim16.Instance->CR1;
+	CR1_reg &= ~0x08;	// clear one pulse mode
+	htim16.Instance->CR1 = CR1_reg;
+	htim16.Instance->RCR = 1;
+	HAL_TIM_OC_Start(&htim16, TIM_CHANNEL_1);
 }
 
 void DoNumberOfSteps(uint32_t steps)
 {
-	number_of_pulses = steps;
-	HAL_TIM_OC_Start_DMA(&htim16, TIM_CHANNEL_1, &number_of_pulses, 32);
+uint32_t	CR1_reg;
+	if ( steps*2 > 256 )
+		return;
+	HAL_TIM_OC_Stop(&htim16, TIM_CHANNEL_1);
+	CR1_reg = htim16.Instance->CR1;
+	CR1_reg |= 0x08;	// set one pulse mode
+	htim16.Instance->CR1 = CR1_reg;
+	htim16.Instance->RCR = steps*2 -1;
+	HAL_TIM_OC_Start(&htim16, TIM_CHANNEL_1);
 }
 
 void DoStepperStop(void)
 {
-	HAL_TIM_OC_Stop_DMA(&htim16, TIM_CHANNEL_1);
+	/*
+uint32_t	CR1_reg;
+
+	CR1_reg = htim16.Instance->CR1;
+	CR1_reg &= ~0x08;	// clear one pulse mode
+	htim16.Instance->CR1 = CR1_reg;
+	htim16.Instance->RCR = 1;
+	*/
+	HAL_TIM_OC_Stop(&htim16, TIM_CHANNEL_1);
 }
 

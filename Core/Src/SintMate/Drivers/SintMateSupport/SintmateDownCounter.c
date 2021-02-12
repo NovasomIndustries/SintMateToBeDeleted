@@ -14,7 +14,7 @@ void Tim100MSec_callback(void)
 	if ( SystemVar.run_state == RUN_STATE_RUNNING)
 	{
 		SystemVar.counter++;
-		if ( SystemVar.counter >= 2 )
+		if ( SystemVar.counter >= 10 )
 		{
 			SystemVar.counter = 0;
 			SystemVar.counter_flag = 1;
@@ -49,7 +49,14 @@ uint32_t 	h,t,u;  // hundreds,tens,units
 			if ( h == 0 )
 				DigitsCounter[xcount] = DigitOFF[j*DIGIT_WIDTH+i];
 			else
-				DigitsCounter[xcount] = Green[h][j*DIGIT_WIDTH+i];
+			{
+				switch(color)
+				{
+				case	ILI9341_GREEN	:	DigitsCounter[xcount] = Green[h][j*DIGIT_WIDTH+i];break;
+				case	ILI9341_RED		:	DigitsCounter[xcount] = Red[h][j*DIGIT_WIDTH+i];break;
+				case	ILI9341_YELLOW	:	DigitsCounter[xcount] = Yellow[h][j*DIGIT_WIDTH+i];break;
+				}
+			}
 		}
 		for(i=0;i<DOWNCOUNTER_DIGITSPACE;i++,xcount++)
 			DigitsCounter[xcount] = 0;
@@ -58,13 +65,25 @@ uint32_t 	h,t,u;  // hundreds,tens,units
 			if (( h == 0 ) && ( t == 0 ))
 				DigitsCounter[xcount] = DigitOFF[j*DIGIT_WIDTH+i];
 			else
-				DigitsCounter[xcount] = Green[t][j*DIGIT_WIDTH+i];
+			{
+				switch(color)
+				{
+				case	ILI9341_GREEN	:	DigitsCounter[xcount] = Green[t][j*DIGIT_WIDTH+i];break;
+				case	ILI9341_RED		:	DigitsCounter[xcount] = Red[t][j*DIGIT_WIDTH+i];break;
+				case	ILI9341_YELLOW	:	DigitsCounter[xcount] = Yellow[t][j*DIGIT_WIDTH+i];break;
+				}
+			}
 		}
 		for(i=0;i<DOWNCOUNTER_DIGITSPACE;i++,xcount++)
 			DigitsCounter[xcount] = 0;
 		for(i=0;i<DIGIT_WIDTH;i++,xcount++)
 		{
-			DigitsCounter[xcount] = Green[u][j*DIGIT_WIDTH+i];
+			switch(color)
+			{
+			case	ILI9341_GREEN	:	DigitsCounter[xcount] = Green[u][j*DIGIT_WIDTH+i];break;
+			case	ILI9341_RED		:	DigitsCounter[xcount] = Red[u][j*DIGIT_WIDTH+i];break;
+			case	ILI9341_YELLOW	:	DigitsCounter[xcount] = Yellow[u][j*DIGIT_WIDTH+i];break;
+			}
 		}
 	}
 }
@@ -89,6 +108,7 @@ void DecrementCounter(void)
 {
 uint32_t	color = ILI9341_GREEN;
 	SystemVar.DownCounter--;
+
 	if (SystemVar.DownCounter == 0 )
 	{
 		DoStepperStop();
@@ -97,6 +117,15 @@ uint32_t	color = ILI9341_GREEN;
 		DrawIdleButtons();
 		color = ILI9341_GREEN;
 	}
+	/*
+	if ( SystemVar.DownCounter < 30 )
+	{
+		if ( SystemVar.DownCounter < 10 )
+			color = ILI9341_RED;
+		else
+			color = ILI9341_YELLOW;
+	}
+	*/
 	SetCounter(SystemVar.DownCounter,color);
 }
 
