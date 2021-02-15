@@ -32,13 +32,27 @@
 #define	SintMateVERSION		"0.0.1"
 #define	LOGO_Y_POS			10
 
-#define 	DIGIT_BUFFERS 		__attribute__((section(".digit_buffers")))
+#define 	DIGIT_BUFFERS 		__attribute__((section(".digit_buffers" ".noinit")))
 
+extern	TIM_HandleTypeDef htim8;
+extern	TIM_HandleTypeDef htim16;
 extern	TIM_HandleTypeDef htim5;
 extern	TIM_HandleTypeDef htim7;
-extern	TIM_HandleTypeDef htim16;
 extern	SPI_HandleTypeDef hspi1;
 extern	SPI_HandleTypeDef hspi6;
+
+#define	LED_TIMER				htim8
+#define	LED_TIMER_CHANNEL		TIM_CHANNEL_2
+#define	BACKLIGHT_TIMER			htim5
+#define	BACKLIGHT_TIMER_CHANNEL	TIM_CHANNEL_1
+#define	STEPPER_TIMER			htim16
+#define	STEPPER_TIMER_CHANNEL	TIM_CHANNEL_1
+#define	TICK100MS_TIMER			htim7
+
+#define	FlashSPIport	hspi6
+#define	LcdSPIport		hspi1
+extern SPI_HandleTypeDef ILI9341_SPI_PORT;
+
 
 typedef struct _SystemParametersTypeDef
 {
@@ -80,5 +94,9 @@ extern	void Init_SintMate(void);
 extern	void SintMateLoop(void);
 extern	void SintMate_SystemSetDefaults(void);
 
+
+#define	DIGIT_GREEN			1
+#define	DIGIT_RED			1
+#define	DIGIT_YELLOW		1
 
 #endif /* INC_SINTMATE_SYSTEM_H_ */

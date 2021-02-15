@@ -20,7 +20,7 @@ static void ILI9341_Reset() {
 
 static void ILI9341_WriteCommand(uint8_t cmd) {
     HAL_GPIO_WritePin(ILI9341_DC_GPIO_Port, ILI9341_DC_Pin, GPIO_PIN_RESET);
-    HAL_SPI_Transmit(&ILI9341_SPI_PORT, &cmd, sizeof(cmd), HAL_MAX_DELAY);
+    HAL_SPI_Transmit(&LcdSPIport, &cmd, sizeof(cmd), HAL_MAX_DELAY);
 }
 
 static void ILI9341_WriteData(uint8_t* buff, size_t buff_size) {
@@ -29,7 +29,7 @@ static void ILI9341_WriteData(uint8_t* buff, size_t buff_size) {
     // split data in small chunks because HAL can't send more then 64K at once
     while(buff_size > 0) {
         uint16_t chunk_size = buff_size > 32768 ? 32768 : buff_size;
-        HAL_SPI_Transmit(&ILI9341_SPI_PORT, buff, chunk_size, HAL_MAX_DELAY);
+        HAL_SPI_Transmit(&LcdSPIport, buff, chunk_size, HAL_MAX_DELAY);
         buff += chunk_size;
         buff_size -= chunk_size;
     }
@@ -44,7 +44,7 @@ static void ILI9341_WriteDmaData(uint8_t* buff, size_t buff_size)
 
 	SystemVar.lcd_dma_busy = 1;
     HAL_GPIO_WritePin(ILI9341_DC_GPIO_Port, ILI9341_DC_Pin, GPIO_PIN_SET);
-    HAL_SPI_Transmit_DMA(&hspi1, buff, buff_size);
+    HAL_SPI_Transmit_DMA(&LcdSPIport, buff, buff_size);
 }
 
 void SPI_TxEnd_Callback(void)
@@ -428,12 +428,12 @@ void ILI9341_FillRectangle(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint1
     HAL_GPIO_WritePin(ILI9341_DC_GPIO_Port, ILI9341_DC_Pin, GPIO_PIN_SET);
     while(fillsize > TXSIZE)
     {
-        HAL_SPI_Transmit(&ILI9341_SPI_PORT, &fillbuff[fillbufindex], TXSIZE, HAL_MAX_DELAY);
+        HAL_SPI_Transmit(&LcdSPIport, &fillbuff[fillbufindex], TXSIZE, HAL_MAX_DELAY);
         fillbufindex += TXSIZE;
         fillsize -= TXSIZE;
     }
     if ( fillsize != 0 )
-        HAL_SPI_Transmit(&ILI9341_SPI_PORT, &fillbuff[fillsize], fillsize, HAL_MAX_DELAY);
+        HAL_SPI_Transmit(&LcdSPIport, &fillbuff[fillsize], fillsize, HAL_MAX_DELAY);
 
     ILI9341_Unselect();
 }

@@ -12,24 +12,23 @@
 #define	DIGITYELLOW_IDX		2
 #define	DIGIT_TYPESNUMBER	3
 
-#define	DIGIT_GREEN			1
-#define	DIGIT_RED			1
-#define	DIGIT_YELLOW		1
 
 #ifdef	DIGIT_GREEN
-//DIGIT_BUFFERS		__attribute__ ((aligned (4)))	uint16_t Green[10][DIGIT_SIZE];
-__attribute__	((aligned (4)))	uint16_t Green[10][DIGIT_SIZE];
+//DIGIT_BUFFERS		__attribute__ ((aligned (16)))	  uint16_t Green[10][DIGIT_SIZE];
+__attribute__	((aligned (16)))	uint16_t Green[10][DIGIT_SIZE];
 #endif
 #ifdef	DIGIT_RED
-DIGIT_BUFFERS		__attribute__ ((aligned (4)))	uint16_t Red[10][DIGIT_SIZE];
+//__attribute__ ((aligned (16)))	uint16_t Red[10][DIGIT_SIZE];
+DIGIT_BUFFERS		__attribute__ ((aligned (16)))	uint16_t Red[10][DIGIT_SIZE];
 #endif
 #ifdef	DIGIT_YELLOW
-DIGIT_BUFFERS		__attribute__ ((aligned (4)))	uint16_t Yellow[10][DIGIT_SIZE];
+__attribute__ ((aligned (16)))	uint16_t Yellow[10][DIGIT_SIZE];
+//DIGIT_BUFFERS		__attribute__ ((aligned (16)))	uint16_t Yellow[10][DIGIT_SIZE];
 #endif
-__attribute__ ((aligned (4)))	uint16_t DigitOFF[DIGIT_SIZE];
-__attribute__ ((aligned (4)))	uint16_t StartButton[BUTTONS_SIZE];
-__attribute__ ((aligned (4)))	uint16_t StopButton[BUTTONS_SIZE];
-__attribute__ ((aligned (4)))	uint16_t SintmateLogo[LOGO_SIZE];
+DIGIT_BUFFERS 	__attribute__ ((aligned (16)))	uint16_t DigitOFF[DIGIT_SIZE];
+DIGIT_BUFFERS	__attribute__ ((aligned (16)))	uint16_t StartButton[BUTTONS_SIZE];
+DIGIT_BUFFERS	__attribute__ ((aligned (16)))	uint16_t StopButton[BUTTONS_SIZE];
+DIGIT_BUFFERS	__attribute__ ((aligned (16)))	uint16_t SintmateLogo[LOGO_SIZE];
 
 //#define	WRITE	1
 
@@ -37,9 +36,9 @@ __attribute__ ((aligned (4)))	uint16_t SintmateLogo[LOGO_SIZE];
 
 //#define	RED_ENABLE		1
 //#define	GREEN_ENABLE		1
-#define	YELLOW_ENABLE	1
+//#define	YELLOW_ENABLE	1
 //#define	OFF_ENABLE			1
-//#define	LOGO_ENABLE			1
+#define	LOGO_ENABLE			1
 
 
 #ifdef	RED_ENABLE
@@ -144,7 +143,15 @@ uint32_t 	i;
 		flash_WriteBytes((uint8_t *)yellow_ptr_array[i] ,flash_SectorToAddress(i*2+DIGITYELLOW_BASE),DIGIT_SIZE*2);
 #endif
 	}
-
+#ifdef	RED_ENABLE
+		flash_WriteBytes((uint8_t *)red_ptr_array[0] ,flash_SectorToAddress(DIGITRED_BASE),DIGIT_SIZE*2);
+#endif
+#ifdef	GREEN_ENABLE
+		flash_WriteBytes((uint8_t *)green_ptr_array[0] ,flash_SectorToAddress(DIGITGREEN_BASE),DIGIT_SIZE*2);
+#endif
+#ifdef	YELLOW_ENABLE
+		flash_WriteBytes((uint8_t *)yellow_ptr_array[0] ,flash_SectorToAddress(DIGITYELLOW_BASE),DIGIT_SIZE*2);
+#endif
 #ifdef	OFF_ENABLE
 	flash_WriteBytes((uint8_t *)RedOFF ,flash_SectorToAddress(DIGITOFF_BASE),DIGIT_SIZE*2);
 #endif

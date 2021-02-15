@@ -7,10 +7,10 @@
 
 #include "main.h"
 
-#define	FlashSPIport	hspi6
 
 #define 	W25Q_DUMMY_BYTE 		0xA5
-#define		READ_COMMAND			0x0B
+#define		READ_COMMAND			0x03
+#define		FAST_READ_COMMAND		0x0B
 #define		WRITE_COMMAND			0x02
 #define		WRITE_DISABLE_COMMAND	0x04
 #define		WRITE_ENABLE_COMMAND	0x06
@@ -37,9 +37,7 @@ uint8_t		StatusRegister1;
 		HAL_Delay(1);
 	}
 	while ((StatusRegister1 & 0x01) == 0x01);
-	HAL_Delay(1);
 	HAL_GPIO_WritePin(FLASH_SS_GPIO_Port,FLASH_SS_Pin,GPIO_PIN_SET);
-	HAL_Delay(1);
 
 }
 
@@ -47,18 +45,14 @@ static void flash_WriteEnable(void)
 {
 	HAL_GPIO_WritePin(FLASH_SS_GPIO_Port,FLASH_SS_Pin,GPIO_PIN_RESET);
 	flash_SpiTX(WRITE_ENABLE_COMMAND);
-	HAL_Delay(1);
 	HAL_GPIO_WritePin(FLASH_SS_GPIO_Port,FLASH_SS_Pin,GPIO_PIN_SET);
-	HAL_Delay(1);
 }
 
 void flash_WriteDisable(void)
 {
 	HAL_GPIO_WritePin(FLASH_SS_GPIO_Port,FLASH_SS_Pin,GPIO_PIN_RESET);
 	flash_SpiTX(WRITE_DISABLE_COMMAND);
-	HAL_Delay(1);
 	HAL_GPIO_WritePin(FLASH_SS_GPIO_Port,FLASH_SS_Pin,GPIO_PIN_SET);
-	HAL_Delay(1);
 }
 
 uint32_t	flash_SectorToAddress(uint32_t	Sector)
@@ -94,14 +88,13 @@ uint32_t	SectorAddr;
 	HAL_GPIO_WritePin(FLASH_SS_GPIO_Port,FLASH_SS_Pin,GPIO_PIN_SET);
 	HAL_Delay(50);
 	flash_WaitForWriteEnd();
-	flash_WriteDisable();
 }
 
 void flash_ReadBytes(uint8_t* pBuffer, uint32_t Address, uint32_t size)
 {
 	HAL_GPIO_WritePin(FLASH_SS_GPIO_Port,FLASH_SS_Pin,GPIO_PIN_RESET);
 	send_cmd_addr(READ_COMMAND,Address);
-	flash_SpiTX(0);
+	//flash_SpiTX(0);
 	HAL_SPI_Receive(&FlashSPIport,pBuffer,size,2000);
 	HAL_GPIO_WritePin(FLASH_SS_GPIO_Port,FLASH_SS_Pin,GPIO_PIN_SET);
 }
@@ -112,11 +105,9 @@ static void flash_WritePage(uint8_t* pBuffer, uint32_t Address, uint32_t size)
 	HAL_GPIO_WritePin(FLASH_SS_GPIO_Port,FLASH_SS_Pin,GPIO_PIN_RESET);
 	send_cmd_addr(WRITE_COMMAND,Address);
 	HAL_SPI_Transmit(&FlashSPIport,pBuffer,size,100);
-	HAL_Delay(1);
 	HAL_GPIO_WritePin(FLASH_SS_GPIO_Port,FLASH_SS_Pin,GPIO_PIN_SET);
-	HAL_Delay(10);
+	HAL_Delay(3);
 	flash_WaitForWriteEnd();
-	flash_WriteDisable();
 }
 
 void flash_WriteBytes(uint8_t* pBuffer, uint32_t Address, uint32_t size)

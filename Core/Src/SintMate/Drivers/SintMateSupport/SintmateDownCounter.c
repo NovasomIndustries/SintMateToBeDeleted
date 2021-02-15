@@ -53,8 +53,12 @@ uint32_t 	h,t,u;  // hundreds,tens,units
 				switch(color)
 				{
 				case	ILI9341_GREEN	:	DigitsCounter[xcount] = Green[h][j*DIGIT_WIDTH+i];break;
+#ifdef	DIGIT_RED
 				case	ILI9341_RED		:	DigitsCounter[xcount] = Red[h][j*DIGIT_WIDTH+i];break;
+#endif
+#ifdef	DIGIT_YELLOW
 				case	ILI9341_YELLOW	:	DigitsCounter[xcount] = Yellow[h][j*DIGIT_WIDTH+i];break;
+#endif
 				}
 			}
 		}
@@ -69,8 +73,12 @@ uint32_t 	h,t,u;  // hundreds,tens,units
 				switch(color)
 				{
 				case	ILI9341_GREEN	:	DigitsCounter[xcount] = Green[t][j*DIGIT_WIDTH+i];break;
+#ifdef	DIGIT_RED
 				case	ILI9341_RED		:	DigitsCounter[xcount] = Red[t][j*DIGIT_WIDTH+i];break;
+#endif
+#ifdef	DIGIT_YELLOW
 				case	ILI9341_YELLOW	:	DigitsCounter[xcount] = Yellow[t][j*DIGIT_WIDTH+i];break;
+#endif
 				}
 			}
 		}
@@ -81,8 +89,12 @@ uint32_t 	h,t,u;  // hundreds,tens,units
 			switch(color)
 			{
 			case	ILI9341_GREEN	:	DigitsCounter[xcount] = Green[u][j*DIGIT_WIDTH+i];break;
+#ifdef	DIGIT_RED
 			case	ILI9341_RED		:	DigitsCounter[xcount] = Red[u][j*DIGIT_WIDTH+i];break;
+#endif
+#ifdef	DIGIT_YELLOW
 			case	ILI9341_YELLOW	:	DigitsCounter[xcount] = Yellow[u][j*DIGIT_WIDTH+i];break;
+#endif
 			}
 		}
 	}
@@ -90,9 +102,9 @@ uint32_t 	h,t,u;  // hundreds,tens,units
 
 void SetCounter(uint32_t value, uint32_t color)
 {
-	ILI9341_DrawImage(DOWNCOUNTER_100_POSX, DOWNCOUNTER_POSY, DIGIT_WIDTH*3+DOWNCOUNTER_DIGITSPACE*2, DIGIT_HEIGHT-1, DigitsCounter);
 	SystemVar.DownCounter = value;
 	compileDigitsCounter(color);
+	ILI9341_DrawImage(DOWNCOUNTER_100_POSX, DOWNCOUNTER_POSY, DIGIT_WIDTH*3+DOWNCOUNTER_DIGITSPACE*2, DIGIT_HEIGHT-1, DigitsCounter);
 }
 
 void InitCounter(void)
@@ -117,7 +129,8 @@ uint32_t	color = ILI9341_GREEN;
 		DrawIdleButtons();
 		color = ILI9341_GREEN;
 	}
-	/*
+#ifdef	DIGIT_RED
+#ifdef	DIGIT_YELLOW
 	if ( SystemVar.DownCounter < 30 )
 	{
 		if ( SystemVar.DownCounter < 10 )
@@ -125,7 +138,8 @@ uint32_t	color = ILI9341_GREEN;
 		else
 			color = ILI9341_YELLOW;
 	}
-	*/
+#endif
+#endif
 	SetCounter(SystemVar.DownCounter,color);
 }
 
