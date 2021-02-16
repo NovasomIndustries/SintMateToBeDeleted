@@ -24,6 +24,7 @@
 #include "SintMateButtons.h"
 #include "SintMateTouchProcess.h"
 #include "StepperDriver.h"
+#include "ImageUploader.h"
 
 /* setting WRITE means nothing runs excluding the flash process */
 //#define	WRITE	1
@@ -72,6 +73,9 @@ typedef struct _SystemParametersTypeDef
 #define		RUN_STATE_SETTINGS	2
 
 #define		TOUCH_DISABLE_WINDOW	5	// 500 mSec delay after touch released the touch is considered not active
+
+#define	USB_BUFLEN			2048
+
 typedef struct _SystemVarDef
 {
 	uint32_t 				run_state;
@@ -84,7 +88,16 @@ typedef struct _SystemVarDef
 	uint32_t 				counter_flag;
 	uint32_t 				Session_DownCounter;
 	uint32_t 				DownCounter;
-	uint32_t 				suppress_trailing_zero;
+	uint8_t 				suppress_trailing_zero;
+	uint32_t 				usb_rxed_byte_count;
+	uint32_t 				usb_byte_count;
+	uint8_t 				usb_do_cp;
+	uint32_t 				usb_pkt_found;
+	uint16_t 				usb_rx_index;
+	uint8_t 				usb_packet_ready;
+	uint8_t 				usb_rxed_packet[USB_BUFLEN];
+	uint8_t 				usb_packet[USB_BUFLEN];
+	uint16_t 				usb_image_number;
 }SystemVarDef;
 
 extern	SystemParametersTypeDef	SystemParameters;

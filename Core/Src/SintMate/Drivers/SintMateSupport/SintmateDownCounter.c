@@ -129,6 +129,7 @@ uint32_t	color = ILI9341_GREEN;
 		DrawIdleButtons();
 		color = ILI9341_GREEN;
 	}
+	/*
 #ifdef	DIGIT_RED
 #ifdef	DIGIT_YELLOW
 	if ( SystemVar.DownCounter < 30 )
@@ -140,6 +141,7 @@ uint32_t	color = ILI9341_GREEN;
 	}
 #endif
 #endif
+*/
 	SetCounter(SystemVar.DownCounter,color);
 }
 

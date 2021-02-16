@@ -3,6 +3,7 @@
 #define __ILI9341_TOUCH_H__
 
 #include <stdbool.h>
+#include "main.h"
 
 /*** Redefine if necessary ***/
 

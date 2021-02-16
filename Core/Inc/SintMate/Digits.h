@@ -7,6 +7,7 @@
 
 #include "main.h"
 
+#include "SintMate.h"
 extern uint16_t D0red[];
 extern uint16_t D0green[];
 extern uint16_t D0yellow[];
@@ -88,6 +89,17 @@ extern   uint16_t home[];
 extern   uint16_t settings[];
 extern   uint16_t home_disabled[];
 extern   uint16_t settings_disabled[];
+extern   uint16_t play[];
+extern   uint16_t stop[];
+
+extern   uint16_t Increase[];
+extern   uint16_t Decrease[];
+extern   uint16_t Increase_disabled[];
+extern   uint16_t Decrease_disabled[];
+extern   uint16_t Home[];
+extern   uint16_t Settings[];
+extern   uint16_t Home_disabled[];
+extern   uint16_t Settings_disabled[];
 extern   uint16_t play[];
 extern   uint16_t stop[];
 

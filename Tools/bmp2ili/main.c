@@ -63,8 +63,9 @@ unsigned short  bitsPerPixel,pixel;
     fprintf(fpout,"*  Created on: Feb 4, 2021\n");
     fprintf(fpout," *      Author: bmp2ili\n");
     fprintf(fpout," */\n");
-    fprintf(fpout,"#include \"main.h\"\n");
-    fprintf(fpout,"#include \"main.h\"\n");
+    fprintf(fpout,"#include \"SintMate.h\"\n");
+    if (( strcmp(element_name,"play") != 0) &&  (strcmp(element_name,"stop") != 0))
+        fprintf(fpout,"#ifdef WRITE\n");
     fprintf(fpout,"uint16_t %s_width=%d;\n",element_name,width);
     fprintf(fpout,"uint16_t %s_height=%d;\n",element_name,height);
     fprintf(fpout,"uint16_t %s[%d] = \n",element_name,read_elements);
@@ -82,6 +83,8 @@ unsigned short  bitsPerPixel,pixel;
     }
 
     fprintf(fpout,"\n};\n");
+    if (( strcmp(element_name,"play") != 0) &&  (strcmp(element_name,"stop") != 0))
+        fprintf(fpout,"#endif\n");
     fclose(fpout);
     *dwidth = width;
     *dheight = height;
@@ -103,6 +106,7 @@ int         i;
     fprintf(fpout,"#ifndef INC_SINTMATE_DIGIT_H_\n");
     fprintf(fpout,"#define INC_SINTMATE_DIGIT_H_\n\n");
     fprintf(fpout,"#include \"main.h\"\n\n");
+    fprintf(fpout,"#include \"SintMate.h\"\n");
     for(i=0;i<10;i++)
     {
         fprintf(fpout,"extern uint16_t D%dred[];\n",i);
@@ -143,6 +147,17 @@ int         i;
     fprintf(fpout,"extern   uint16_t settings[];\n");
     fprintf(fpout,"extern   uint16_t home_disabled[];\n");
     fprintf(fpout,"extern   uint16_t settings_disabled[];\n");
+    fprintf(fpout,"extern   uint16_t play[];\n");
+    fprintf(fpout,"extern   uint16_t stop[];\n");
+    fprintf(fpout,"\n");
+    fprintf(fpout,"extern   uint16_t Increase[];\n");
+    fprintf(fpout,"extern   uint16_t Decrease[];\n");
+    fprintf(fpout,"extern   uint16_t Increase_disabled[];\n");
+    fprintf(fpout,"extern   uint16_t Decrease_disabled[];\n");
+    fprintf(fpout,"extern   uint16_t Home[];\n");
+    fprintf(fpout,"extern   uint16_t Settings[];\n");
+    fprintf(fpout,"extern   uint16_t Home_disabled[];\n");
+    fprintf(fpout,"extern   uint16_t Settings_disabled[];\n");
     fprintf(fpout,"extern   uint16_t play[];\n");
     fprintf(fpout,"extern   uint16_t stop[];\n");
     fprintf(fpout,"\n");
