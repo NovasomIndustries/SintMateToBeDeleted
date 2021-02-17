@@ -70,7 +70,6 @@ unsigned char   b[4];
         }
     }
     pixel_index=0;
-    printf("pixel_index %d\n",pixel_index);
 
     for(i=0;i<bmp_len;i++)
     {
@@ -87,7 +86,5 @@ unsigned char   b[4];
         }
         pixel_index+=4;
     }
-    printf("pixel_index %d bmp_len %d total %d \n",pixel_index,bmp_len,bmp_len*4);
-
     return pixel_index;
 }

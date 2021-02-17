@@ -46,10 +46,10 @@ uint32_t	i;
 
 	SystemVar.Session_DownCounter = INITIAL_DOWNCOUNTER_VALUE;
 	SystemVar.run_state = RUN_STATE_IDLE;
-
+/*
 	for(i=0;i<10;i++)
 		bzero(Green[i],DIGIT_SIZE*2);
-
+*/
 	InitCounter();
 	DrawIdleButtons();
 	StepperInit();

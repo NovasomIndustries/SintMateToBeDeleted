@@ -41,7 +41,7 @@ int serial_port;
     // tty.c_oflag &= ~OXTABS; // Prevent conversion of tabs to spaces (NOT PRESENT ON LINUX)
     // tty.c_oflag &= ~ONOEOT; // Prevent removal of C-d chars (0x004) in output (NOT PRESENT ON LINUX)
 
-    tty.c_cc[VTIME] = 10;    // Wait for up to 1s (10 deciseconds), returning as soon as any data is received.
+    tty.c_cc[VTIME] = 30;    // Wait for up to 1s (10 deciseconds), returning as soon as any data is received.
     tty.c_cc[VMIN] = 0;
 
     // Set in/out baud rate to be B115200
@@ -61,7 +61,7 @@ void serial_close(int serial_port)
     close(serial_port);
 }
 
-int serial_tx_rx(int serial_port,char *tx_packet,int tx_len,char *rx_packet)
+int serial_tx_rx(int serial_port,char *tx_packet,int tx_len,char *rx_packet,char *digit_name)
 {
 int  num_bytes,pnum,rxed,packet_id ;
     write(serial_port, tx_packet, strlen((char *)tx_packet));
@@ -73,17 +73,17 @@ int  num_bytes,pnum,rxed,packet_id ;
         printf("Error reading: %s", strerror(errno));
         return -1;
     }
+    printf("Got %s\n",rx_packet);
     pnum = sscanf(rx_packet,"%d %d OK",&packet_id,&rxed);
     if ( pnum == 2)
     {
-        printf("Packet %d accepted, size %d\n",packet_id, rxed);
+        printf("Image %s %d accepted, size %d\n",digit_name,packet_id, rxed);
         return rxed;
     }
-
     printf("Got %d : %s\n", pnum,rx_packet);
     return -1;
-
 }
+
 #define BLOCK_SIZE   32
 int serial_send_file(int serial_port,char *image,int size_in_bytes,char *rx_packet)
 {
@@ -115,4 +115,36 @@ int  num_bytes,pnum,rxed=-1,packet_id,byte_count = size_in_bytes ;
     }
     printf("ERROR : %d %d %s\n",pnum,packet_id,rx_packet);
     return -1;
+}
+
+int serial_send_command(int serial_port,char *command,char *image,char *rx_packet)
+{
+int  num_bytes ;
+
+
+    write(serial_port, command, strlen(command));
+    fsync(serial_port);
+    bzero(rx_packet,BUFSIZE);
+    num_bytes = read(serial_port, rx_packet, BUFSIZE);
+
+    if (num_bytes < 0)
+    {
+        printf("Error reading: %s\n", strerror(errno));
+        return 0;
+    }
+    printf("RECEIVED %d bytes : %s\n",num_bytes,rx_packet);
+
+    return -1;
+}
+
+#define RESTART_PACKET      0xDEADBEEF
+#define RESTART_PACKET_LEN  16
+int serial_send_restart(int serial_port)
+{
+unsigned int restart_packet[RESTART_PACKET_LEN],i;
+
+    for(i=0;i<RESTART_PACKET_LEN;i++)
+        restart_packet[i] = RESTART_PACKET;
+    write(serial_port, (char *)&restart_packet, RESTART_PACKET_LEN*4);
+    return 0;
 }
