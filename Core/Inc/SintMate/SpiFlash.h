@@ -16,6 +16,8 @@ extern	void 		flash_ReadBytes(uint8_t* pBuffer, uint32_t Address, uint32_t size)
 extern	void 		flash_WriteBytes(uint8_t* pBuffer, uint32_t Address, uint32_t size);
 extern	uint32_t 	flash_ReadID(void);
 extern	uint32_t 	SetupFlash(void);
+extern	void 		flash_ChipErase(void);
+extern	uint8_t 	flash_PollChipErase(void);
 
 
 #define		F128			0x18

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "ImageUploader.h"
 
+extern  char            rx_buf[BUFSIZE];
 
 int serial_open(char *port)
 {
@@ -17,7 +18,7 @@ int serial_port;
     // Read in existing settings, and handle any error
     if(tcgetattr(serial_port, &tty) != 0)
     {
-        printf("Error %i from tcgetattr: %s\n", errno, strerror(errno));
+        printf("Error %i from tcgetattr: %s on port %s\n", errno, strerror(errno),port);
         return 1;
     }
 
@@ -41,7 +42,7 @@ int serial_port;
     // tty.c_oflag &= ~OXTABS; // Prevent conversion of tabs to spaces (NOT PRESENT ON LINUX)
     // tty.c_oflag &= ~ONOEOT; // Prevent removal of C-d chars (0x004) in output (NOT PRESENT ON LINUX)
 
-    tty.c_cc[VTIME] = 30;    // Wait for up to 1s (10 deciseconds), returning as soon as any data is received.
+    tty.c_cc[VTIME] = 100;    // Wait for up to 1s (10 deciseconds), returning as soon as any data is received.
     tty.c_cc[VMIN] = 0;
 
     // Set in/out baud rate to be B115200
@@ -61,79 +62,28 @@ void serial_close(int serial_port)
     close(serial_port);
 }
 
-int serial_tx_rx(int serial_port,char *tx_packet,int tx_len,char *rx_packet,char *digit_name)
+int serial_tx_rx(int serial_port,char *tx_packet,int tx_len,char *rx_packet,char *item_name)
 {
 int  num_bytes,pnum,rxed,packet_id ;
-    write(serial_port, tx_packet, strlen((char *)tx_packet));
+
+    //printf("%s : Sending %s, size is %d\n", __FUNCTION__,item_name,tx_len);
+    num_bytes = write(serial_port, tx_packet, strlen(tx_packet));
     bzero(rx_packet,BUFSIZE);
     num_bytes = read(serial_port, rx_packet, BUFSIZE);
+    //printf("%s : Received : rx_packet %s , size is %d\n",__FUNCTION__,rx_packet,num_bytes);
 
     if (num_bytes < 0)
     {
         printf("Error reading: %s", strerror(errno));
         return -1;
     }
-    printf("Got %s\n",rx_packet);
-    pnum = sscanf(rx_packet,"%d %d OK",&packet_id,&rxed);
+    pnum = sscanf(rx_packet,"Finished %d %d OK",&packet_id,&rxed);
     if ( pnum == 2)
     {
-        printf("Image %s %d accepted, size %d\n",digit_name,packet_id, rxed);
+        //printf("%s : %s downloaded, size %d\n",__FUNCTION__,item_name, rxed);
         return rxed;
     }
-    printf("Got %d : %s\n", pnum,rx_packet);
-    return -1;
-}
-
-#define BLOCK_SIZE   32
-int serial_send_file(int serial_port,char *image,int size_in_bytes,char *rx_packet)
-{
-int  num_bytes,pnum,rxed=-1,packet_id,byte_count = size_in_bytes ;
-
-    while ( byte_count > BLOCK_SIZE )
-    {
-        write(serial_port, image, BLOCK_SIZE);
-        image +=BLOCK_SIZE;
-        byte_count -= BLOCK_SIZE;
-    }
-    if ( byte_count != 0 )
-        write(serial_port, image, byte_count);
-    fsync(serial_port);
-    bzero(rx_packet,BUFSIZE);
-    num_bytes = read(serial_port, rx_packet, BUFSIZE);
-
-    if (num_bytes < 0)
-    {
-        printf("Error reading: %s\n", strerror(errno));
-        return 0;
-    }
-    //printf("RECEIVED %d bytes : %s\n",num_bytes,rx_packet);
-    pnum = sscanf(rx_packet,"Finished %d %d",&packet_id,&rxed);
-    if ( pnum == 2)
-    {
-        printf("Image %d %d written\n", packet_id, rxed);
-        return rxed;
-    }
-    printf("ERROR : %d %d %s\n",pnum,packet_id,rx_packet);
-    return -1;
-}
-
-int serial_send_command(int serial_port,char *command,char *image,char *rx_packet)
-{
-int  num_bytes ;
-
-
-    write(serial_port, command, strlen(command));
-    fsync(serial_port);
-    bzero(rx_packet,BUFSIZE);
-    num_bytes = read(serial_port, rx_packet, BUFSIZE);
-
-    if (num_bytes < 0)
-    {
-        printf("Error reading: %s\n", strerror(errno));
-        return 0;
-    }
-    printf("RECEIVED %d bytes : %s\n",num_bytes,rx_packet);
-
+    printf("%s : Error : rx_packet %s\n",__FUNCTION__,rx_packet);
     return -1;
 }
 
@@ -148,3 +98,36 @@ unsigned int restart_packet[RESTART_PACKET_LEN],i;
     write(serial_port, (char *)&restart_packet, RESTART_PACKET_LEN*4);
     return 0;
 }
+
+int serial_tx_rx_command(int serial_port,char *tx_packet,char *rx_packet)
+{
+int  num_bytes ;
+
+    //printf("%s : %s %d\n",__FUNCTION__,tx_packet,strlen(tx_packet));
+    num_bytes = write(serial_port, tx_packet, strlen(tx_packet));
+    bzero(rx_packet,BUFSIZE);
+    num_bytes = read(serial_port, rx_packet, BUFSIZE);
+    //printf("%s : received %s\n",__FUNCTION__,rx_packet);
+
+    if (num_bytes < 0)
+    {
+        printf("Error reading: %s", strerror(errno));
+        return -1;
+    }
+    return num_bytes;
+}
+
+int serial_rx_command(int serial_port,char *rx_packet)
+{
+int  num_bytes ;
+
+    bzero(rx_packet,BUFSIZE);
+    num_bytes = read(serial_port, rx_packet, BUFSIZE);
+    if (num_bytes < 0)
+    {
+        printf("Error reading: %s", strerror(errno));
+        return -1;
+    }
+    return num_bytes;
+}
+

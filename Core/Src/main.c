@@ -138,9 +138,7 @@ int main(void)
 		//HAL_TIM_OC_Stop(&htim16, TIM_CHANNEL_1);
 		 *
 		 */
-#ifdef	WRITE
-		HAL_Delay(200);
-#endif
+
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

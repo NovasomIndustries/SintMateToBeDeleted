@@ -7,7 +7,8 @@
 #include "main.h"
 #include "ws2812b.h"
 
-DIGIT_BUFFERS	__attribute__	((aligned (16)))	uint32_t	FrameBuffer[BUFLEN][LEDBPP]; /* 0GRB */
+//DIGIT_BUFFERS	__attribute__	((aligned (16)))	uint32_t	FrameBuffer[BUFLEN][LEDBPP]; /* 0GRB */
+__attribute__	((aligned (16)))	uint32_t	FrameBuffer[BUFLEN][LEDBPP]; /* 0GRB */
 
 uint32_t WS2812_led_index_from_number(uint32_t led_number)
 {

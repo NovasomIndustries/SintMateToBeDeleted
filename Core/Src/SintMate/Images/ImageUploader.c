@@ -9,7 +9,7 @@
 
 uint8_t		usb_uploader_tx_buf[64];
 extern	uint8_t CDC_Transmit_FS(uint8_t* Buf, uint16_t Len);
-uint8_t		image_buffer[32768]; // the biggest one
+uint8_t		image_buffer[LOGO_SIZE*2]; // the biggest one
 uint32_t	usb_rxed_byte_count , usb_byte_count, usb_rx_index , usb_bytes_to_receive,restart_flag , stored_image;
 
 void ReceiveUSBPacket(void)
@@ -34,6 +34,132 @@ uint32_t	i;
 		if ( usb_rx_index > usb_bytes_to_receive-1)
 		{
 			usb_rx_index = 0;
+			if ( strcmp ( (char *)SystemVar.usb_image_name , "settings") == 0 )
+			{
+				bzero(Settings,ICONS_SIZE);
+				for(i=0;i<usb_bytes_to_receive;i+=2)
+				{
+					Settings[usb_rx_index] = (image_buffer[i]<<8) | image_buffer[i+1];
+					usb_rx_index++;
+				}
+				SystemVar.usb_image_number = 0;
+			}
+			if ( strcmp ( (char *)SystemVar.usb_image_name , "settings_disabled") == 0 )
+			{
+				bzero(Settings_disabled,ICONS_SIZE);
+				for(i=0;i<usb_bytes_to_receive;i+=2)
+				{
+					Settings_disabled[usb_rx_index] = (image_buffer[i]<<8) | image_buffer[i+1];
+					usb_rx_index++;
+				}
+				SystemVar.usb_image_number = 0;
+			}
+			if ( strcmp ( (char *)SystemVar.usb_image_name , "home") == 0 )
+			{
+				bzero(Home,ICONS_SIZE);
+				for(i=0;i<usb_bytes_to_receive;i+=2)
+				{
+					Home[usb_rx_index] = (image_buffer[i]<<8) | image_buffer[i+1];
+					usb_rx_index++;
+				}
+				SystemVar.usb_image_number = 0;
+			}
+			if ( strcmp ( (char *)SystemVar.usb_image_name , "home_disabled") == 0 )
+			{
+				bzero(Home_disabled,ICONS_SIZE);
+				for(i=0;i<usb_bytes_to_receive;i+=2)
+				{
+					Home_disabled[usb_rx_index] = (image_buffer[i]<<8) | image_buffer[i+1];
+					usb_rx_index++;
+				}
+				SystemVar.usb_image_number = 0;
+			}
+			if ( strcmp ( (char *)SystemVar.usb_image_name , "increase") == 0 )
+			{
+				bzero(Increase,ICONS_SIZE);
+				for(i=0;i<usb_bytes_to_receive;i+=2)
+				{
+					Increase[usb_rx_index] = (image_buffer[i]<<8) | image_buffer[i+1];
+					usb_rx_index++;
+				}
+				SystemVar.usb_image_number = 0;
+			}
+			if ( strcmp ( (char *)SystemVar.usb_image_name , "increase_disabled") == 0 )
+			{
+				bzero(Increase_disabled,ICONS_SIZE);
+				for(i=0;i<usb_bytes_to_receive;i+=2)
+				{
+					Increase_disabled[usb_rx_index] = (image_buffer[i]<<8) | image_buffer[i+1];
+					usb_rx_index++;
+				}
+				SystemVar.usb_image_number = 0;
+			}
+			if ( strcmp ( (char *)SystemVar.usb_image_name , "decrease") == 0 )
+			{
+				bzero(Decrease,ICONS_SIZE);
+				for(i=0;i<usb_bytes_to_receive;i+=2)
+				{
+					Decrease[usb_rx_index] = (image_buffer[i]<<8) | image_buffer[i+1];
+					usb_rx_index++;
+				}
+				SystemVar.usb_image_number = 0;
+			}
+			if ( strcmp ( (char *)SystemVar.usb_image_name , "decrease_disabled") == 0 )
+			{
+				bzero(Decrease_disabled,ICONS_SIZE);
+				for(i=0;i<usb_bytes_to_receive;i+=2)
+				{
+					Decrease_disabled[usb_rx_index] = (image_buffer[i]<<8) | image_buffer[i+1];
+					usb_rx_index++;
+				}
+				SystemVar.usb_image_number = 0;
+			}
+
+			if ( strcmp ( (char *)SystemVar.usb_image_name , "play") == 0 )
+			{
+				bzero(play,BUTTONS_SIZE);
+				for(i=0;i<usb_bytes_to_receive;i+=2)
+				{
+					play[usb_rx_index] = (image_buffer[i]<<8) | image_buffer[i+1];
+					usb_rx_index++;
+				}
+				SystemVar.usb_image_number = 0;
+			}
+			if ( strcmp ( (char *)SystemVar.usb_image_name , "stop") == 0 )
+			{
+				bzero(stop,BUTTONS_SIZE);
+				for(i=0;i<usb_bytes_to_receive;i+=2)
+				{
+					stop[usb_rx_index] = (image_buffer[i]<<8) | image_buffer[i+1];
+					usb_rx_index++;
+				}
+				SystemVar.usb_image_number = 0;
+			}
+
+
+			if ( strcmp ( (char *)SystemVar.usb_image_name , "SintMateLogo") == 0 )
+			{
+				bzero(SintmateLogo,LOGO_SIZE);
+				for(i=0;i<usb_bytes_to_receive;i+=2)
+				{
+					SintmateLogo[usb_rx_index] = (image_buffer[i]<<8) | image_buffer[i+1];
+					usb_rx_index++;
+				}
+				SystemVar.usb_image_number = 0;
+			}
+			if ( strcmp ( (char *)SystemVar.usb_image_name , "DigitOff") == 0 )
+			{
+				bzero(DigitOFF,DIGITOFF_BASE);
+				for(i=0;i<usb_bytes_to_receive;i+=2)
+				{
+					DigitOFF[usb_rx_index] = (image_buffer[i]<<8) | image_buffer[i+1];
+					usb_rx_index++;
+				}
+				SystemVar.usb_image_number = 0;
+			}
+
+			/************************************************************************************/
+
 			if ( strcmp ( (char *)SystemVar.usb_image_name , "green") == 0 )
 			{
 				bzero(Green[SystemVar.usb_image_number],DIGIT_SIZE);
@@ -75,64 +201,220 @@ uint32_t	i;
 
 static void store_image(void)
 {
-uint32_t	i,j,base;
+uint32_t	i,j,base=0;
 	if ( strcmp ( (char *)SystemVar.usb_image_name , "green") == 0 )
 		base = DIGITGREEN_BASE;
 	if ( strcmp ( (char *)SystemVar.usb_image_name , "red") == 0 )
 		base = DIGITRED_BASE;
 	if ( strcmp ( (char *)SystemVar.usb_image_name , "yellow") == 0 )
 		base = DIGITYELLOW_BASE;
-	for(j=0;j<32;j++)
-	{
-		flash_EraseSector(base+j);
-	}
-/*
-	bzero(usb_uploader_tx_buf,64);
-	sprintf((char *)usb_uploader_tx_buf,"ERASED %s\n",SystemVar.usb_image_name);
-	CDC_Transmit_FS(usb_uploader_tx_buf,strlen((char *)usb_uploader_tx_buf));
-*/
+	if ( strcmp ( (char *)SystemVar.usb_image_name , "settings") == 0 )
+		base = SETTINGS_BASE;
+	if ( strcmp ( (char *)SystemVar.usb_image_name , "settings_disabled") == 0 )
+		base = SETTINGS_DISABLED_BASE;
+	if ( strcmp ( (char *)SystemVar.usb_image_name , "home") == 0 )
+		base = HOME_BASE;
+	if ( strcmp ( (char *)SystemVar.usb_image_name , "home_disabled") == 0 )
+		base = HOME_DISABLED_BASE;
+	if ( strcmp ( (char *)SystemVar.usb_image_name , "increase") == 0 )
+		base = INCREASE_BASE;
+	if ( strcmp ( (char *)SystemVar.usb_image_name , "increase_disabled") == 0 )
+		base = INCREASE_DISABLED_BASE;
+	if ( strcmp ( (char *)SystemVar.usb_image_name , "decrease") == 0 )
+		base = DECREASE_BASE;
+	if ( strcmp ( (char *)SystemVar.usb_image_name , "decrease_disabled") == 0 )
+		base = DECREASE_DISABLED_BASE;
+	if ( strcmp ( (char *)SystemVar.usb_image_name , "SintMateLogo") == 0 )
+		base = LOGO_BASE;
+	if ( strcmp ( (char *)SystemVar.usb_image_name , "DigitOff") == 0 )
+		base = DIGITOFF_BASE;
+	if ( strcmp ( (char *)SystemVar.usb_image_name , "play") == 0 )
+		base = PLAY_BASE;
+	if ( strcmp ( (char *)SystemVar.usb_image_name , "stop") == 0 )
+		base = STOP_BASE;
 
-	for(i=0;i<10;i++)
+	if (( base >= PLAY_BASE ) && ( base < STOP_BASE ))
 	{
-		if ( strcmp ( (char *)SystemVar.usb_image_name , "green") == 0 )
+		for(j=0;j<16;j++)
 		{
-			flash_WriteBytes((uint8_t *)Green[i] ,flash_SectorToAddress(i*2+DIGITGREEN_BASE),DIGIT_SIZE*2);
+			flash_EraseSector(base+j);
 		}
-		if ( strcmp ( (char *)SystemVar.usb_image_name , "red") == 0 )
+	}
+	if (( base >= STOP_BASE ) && ( base < STOP_BASE+16 ))
+	{
+		for(j=0;j<16;j++)
 		{
-			flash_WriteBytes((uint8_t *)Red[i] ,flash_SectorToAddress(i*2+DIGITRED_BASE),DIGIT_SIZE*2);
+			flash_EraseSector(base+j);
 		}
-		if ( strcmp ( (char *)SystemVar.usb_image_name , "yellow") == 0 )
+	}
+	if (( base >= DIGITRED_BASE ) && ( base < INCREASE_BASE ))
+	{
+		for(j=0;j<32;j++)
 		{
-			flash_WriteBytes((uint8_t *)Yellow[i] ,flash_SectorToAddress(i*2+DIGITYELLOW_BASE),DIGIT_SIZE*2);
+			flash_EraseSector(base+j);
 		}
 	}
 
+	if (( base >= INCREASE_BASE ) && ( base <= HOME_DISABLED_BASE ))
+	{
+		flash_EraseSector(base);
+		flash_EraseSector(base+1);
+	}
+
+	if ( base == DIGITOFF_BASE )
+	{
+		flash_EraseSector(base);
+		flash_EraseSector(base+1);
+	}
+
+	if ( base == LOGO_BASE )
+	{
+		flash_EraseSector(base);
+		flash_EraseSector(base+1);
+		flash_EraseSector(base+2);
+		flash_EraseSector(base+3);
+		flash_EraseSector(base+4);
+		flash_EraseSector(base+5);
+		flash_EraseSector(base+6);
+		flash_EraseSector(base+7);
+	}
+
+	if ( base == PLAY_BASE )
+	{
+		flash_WriteBytes((uint8_t *)play ,flash_SectorToAddress(PLAY_BASE),BUTTONS_SIZE*2);
+	}
+	if ( base == STOP_BASE )
+	{
+		flash_WriteBytes((uint8_t *)stop ,flash_SectorToAddress(STOP_BASE),BUTTONS_SIZE*2);
+	}
+
+	if ( base == LOGO_BASE )
+	{
+		flash_WriteBytes((uint8_t *)SintmateLogo ,flash_SectorToAddress(LOGO_BASE),LOGO_SIZE*2);
+	}
+
+	if ( base == DIGITOFF_BASE )
+	{
+		flash_WriteBytes((uint8_t *)DigitOFF ,flash_SectorToAddress(DIGITOFF_BASE),DIGIT_SIZE*2);
+	}
+
+	if (( base >= DIGITRED_BASE ) && ( base < INCREASE_BASE ))
+	{
+		for(i=0;i<10;i++)
+		{
+			if ( strcmp ( (char *)SystemVar.usb_image_name , "green") == 0 )
+			{
+				flash_WriteBytes((uint8_t *)Green[i] ,flash_SectorToAddress(i*2+DIGITGREEN_BASE),DIGIT_SIZE*2);
+			}
+			if ( strcmp ( (char *)SystemVar.usb_image_name , "red") == 0 )
+			{
+				flash_WriteBytes((uint8_t *)Red[i] ,flash_SectorToAddress(i*2+DIGITRED_BASE),DIGIT_SIZE*2);
+			}
+			if ( strcmp ( (char *)SystemVar.usb_image_name , "yellow") == 0 )
+			{
+				flash_WriteBytes((uint8_t *)Yellow[i] ,flash_SectorToAddress(i*2+DIGITYELLOW_BASE),DIGIT_SIZE*2);
+			}
+		}
+	}
+
+	if (( base >= INCREASE_BASE ) && ( base <= HOME_DISABLED_BASE ))
+	{
+		if ( strcmp ( (char *)SystemVar.usb_image_name , "settings") == 0 )
+			flash_WriteBytes((uint8_t *)Settings 			,flash_SectorToAddress(SETTINGS_BASE),ICONS_SIZE*2);
+		if ( strcmp ( (char *)SystemVar.usb_image_name , "settings_disabled") == 0 )
+			flash_WriteBytes((uint8_t *)Settings_disabled	,flash_SectorToAddress(SETTINGS_DISABLED_BASE),ICONS_SIZE*2);
+		if ( strcmp ( (char *)SystemVar.usb_image_name , "home") == 0 )
+			flash_WriteBytes((uint8_t *)Home	 			,flash_SectorToAddress(HOME_BASE),ICONS_SIZE*2);
+		if ( strcmp ( (char *)SystemVar.usb_image_name , "home_disabled") == 0 )
+			flash_WriteBytes((uint8_t *)Home_disabled		,flash_SectorToAddress(HOME_DISABLED_BASE),ICONS_SIZE*2);
+		if ( strcmp ( (char *)SystemVar.usb_image_name , "increase") == 0 )
+			flash_WriteBytes((uint8_t *)Increase 			,flash_SectorToAddress(INCREASE_BASE),ICONS_SIZE*2);
+		if ( strcmp ( (char *)SystemVar.usb_image_name , "increase_disabled") == 0 )
+			flash_WriteBytes((uint8_t *)Increase_disabled	,flash_SectorToAddress(INCREASE_DISABLED_BASE),ICONS_SIZE*2);
+		if ( strcmp ( (char *)SystemVar.usb_image_name , "decrease") == 0 )
+			flash_WriteBytes((uint8_t *)Decrease 			,flash_SectorToAddress(DECREASE_BASE),ICONS_SIZE*2);
+		if ( strcmp ( (char *)SystemVar.usb_image_name , "decrease_disabled") == 0 )
+			flash_WriteBytes((uint8_t *)Decrease_disabled	,flash_SectorToAddress(DECREASE_DISABLED_BASE),ICONS_SIZE*2);
+	}
 
 	bzero(usb_uploader_tx_buf,64);
 	sprintf((char *)usb_uploader_tx_buf,"STORED %s\n",SystemVar.usb_image_name);
 	CDC_Transmit_FS(usb_uploader_tx_buf,strlen((char *)usb_uploader_tx_buf));
-
-
 	SystemVar.usb_pkt_found = USB_WAIT_FOR_HEADER;
+}
+
+static void erase_flash(void)
+{
+uint32_t	secs = 0 , status = 0;
+char		msg[32];
+
+	ILI9341_FillScreen(ILI9341_BLACK);
+	sprintf(msg,"Erasing ...");
+	ILI9341_WriteString(20, 100, msg, Font_16x26, ILI9341_RED, ILI9341_BLACK);
+	HAL_Delay(1000);
+	flash_ChipErase();
+	while( status == 0 )
+	{
+		sprintf(msg,"Erasing, %d elapsed",(int )secs);
+		CDC_Transmit_FS((uint8_t *)msg,strlen(msg));
+		HAL_Delay(1000);
+		secs += 1;
+		status = flash_PollChipErase();
+	}
+	HAL_Delay(100);
+	sprintf(msg,"Flash Erased, %d elapsed\n",(int )secs);
+	CDC_Transmit_FS((uint8_t *)msg,strlen(msg));
+	sprintf(msg,"Erase done  ");
+	ILI9341_WriteString(20, 100, msg, Font_16x26, ILI9341_BLUE, ILI9341_BLACK);
+	HAL_Delay(1000);
 }
 
 uint32_t ParseUSBPacket(void)
 {
 uint32_t	pnum;
-int			a , b;
+char		item[32], size_label[32], usb_image_name[32];
 
 	bzero(SystemVar.usb_image_name,sizeof(SystemVar.usb_image_name));
-	pnum = sscanf((char *)SystemVar.usb_packet,"STORE %s",SystemVar.usb_image_name);
-	if ( pnum == 1 )
+	bzero(usb_image_name,32);
+
+	pnum = sscanf((char *)SystemVar.usb_packet,"%s %s %s %d %d",
+		item,usb_image_name,size_label,(int *)&SystemVar.usb_byte_count,(int *)&SystemVar.usb_image_number);
+
+	sprintf(SystemVar.usb_image_name,"%s",usb_image_name);
+	if ( pnum == 2 )
 	{
-		store_image();
+		if ( strcmp(item,"STORE") == 0 )
+			store_image();
+		if (( strcmp(item,"ERASE") == 0 ) && ( strcmp(usb_image_name,"ALL") == 0 ))
+			erase_flash();
+		return 0;
 	}
-	pnum = sscanf((char *)SystemVar.usb_packet,"IMAGE %s %d SIZE %d",SystemVar.usb_image_name,&a,&b);
-	if ( pnum == 3 )
+
+	if ( pnum == 4 )
 	{
-		SystemVar.usb_image_number = a;
-		SystemVar.usb_byte_count = b;
+		bzero(usb_uploader_tx_buf,64);
+		if ( strcmp(item,"BUTTON") == 0 )
+		{
+			sprintf((char *)usb_uploader_tx_buf,"BUTTON %s %d OK",SystemVar.usb_image_name,(int )SystemVar.usb_byte_count);
+		}
+		if ( strcmp(item,"LOGO") == 0 )
+		{
+			sprintf((char *)usb_uploader_tx_buf,"LOGO %s %d OK",SystemVar.usb_image_name,(int )SystemVar.usb_byte_count);
+		}
+		if ( strcmp(item,"DIGITOFF") == 0 )
+		{
+			sprintf((char *)usb_uploader_tx_buf,"DIGITOFF %s %d OK",SystemVar.usb_image_name,(int )SystemVar.usb_byte_count);
+		}
+		CDC_Transmit_FS(usb_uploader_tx_buf,strlen((char *)usb_uploader_tx_buf));
+		SystemVar.usb_rx_index  = 0;
+		SystemVar.usb_pkt_found = USB_RECEIVING_PACKET;
+		usb_rxed_byte_count = usb_byte_count = usb_rx_index = 0;
+		usb_bytes_to_receive = SystemVar.usb_byte_count/2;
+		return 0;
+	}
+
+	if ( pnum == 5 )
+	{
 		if ( SystemVar.usb_image_number > 9 )
 		{
 			bzero(usb_uploader_tx_buf,64);
@@ -149,8 +431,9 @@ int			a , b;
 			SystemVar.usb_pkt_found = USB_WAIT_FOR_HEADER;
 			return 1;
 		}
+
 		bzero(usb_uploader_tx_buf,64);
-		sprintf((char *)usb_uploader_tx_buf,"%d %d OK",(int )SystemVar.usb_image_number,(int )SystemVar.usb_byte_count);
+		sprintf((char *)usb_uploader_tx_buf,"DIGIT %s %d %d OK",(char *)SystemVar.usb_image_name, (int )SystemVar.usb_image_number,(int )SystemVar.usb_byte_count);
 		CDC_Transmit_FS(usb_uploader_tx_buf,strlen((char *)usb_uploader_tx_buf));
 
 		SystemVar.usb_rx_index  = 0;
@@ -161,7 +444,7 @@ int			a , b;
 	}
 
 	bzero(usb_uploader_tx_buf,64);
-	sprintf((char *)usb_uploader_tx_buf,"NOK pnum %d\n",(int )pnum);
+	sprintf((char *)usb_uploader_tx_buf,"NOK pnum %d : %s\n",(int )pnum , (char *)SystemVar.usb_packet);
 	CDC_Transmit_FS(usb_uploader_tx_buf,strlen((char *)usb_uploader_tx_buf));
 	SystemVar.usb_pkt_found = USB_WAIT_FOR_HEADER;
 	return 1;

@@ -98,7 +98,7 @@ typedef struct _SystemVarDef
 	uint8_t 				usb_rxed_packet[USB_BUFLEN];
 	uint8_t 				usb_packet[USB_BUFLEN];
 	uint16_t 				usb_image_number;
-	uint8_t 				usb_image_name[32];
+	char 					usb_image_name[32];
 }SystemVarDef;
 
 extern	SystemParametersTypeDef	SystemParameters;

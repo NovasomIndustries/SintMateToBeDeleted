@@ -30,8 +30,16 @@
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
+			<Add directory="Include" />
 		</Compiler>
-		<Unit filename="main.c">
+		<Unit filename="Include/ImageUploader.h" />
+		<Unit filename="Src/bmp_convert.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="Src/main.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="Src/serial.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Extensions />

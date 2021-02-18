@@ -17,6 +17,7 @@
 #define		READ_ID_COMMAND			0x9f
 #define		GETSTATUS_COMMAND		0x05
 #define		SECTOR_ERASE_COMMAND	0x20
+#define		CHIP_ERASE_COMMAND		0xc7
 
 
 static uint8_t	flash_SpiTX(uint8_t	Data)
@@ -38,7 +39,6 @@ uint8_t		StatusRegister1;
 	}
 	while ((StatusRegister1 & 0x01) == 0x01);
 	HAL_GPIO_WritePin(FLASH_SS_GPIO_Port,FLASH_SS_Pin,GPIO_PIN_SET);
-
 }
 
 static void flash_WriteEnable(void)
@@ -133,3 +133,24 @@ uint32_t fake_addr, ret_val;
 	HAL_GPIO_WritePin(FLASH_SS_GPIO_Port,FLASH_SS_Pin,GPIO_PIN_SET);
 	return ret_val;
 }
+
+uint8_t flash_PollChipErase(void)
+{
+uint8_t		StatusRegister1; // 1 if operation in progress, 0 if finished
+	HAL_GPIO_WritePin(FLASH_SS_GPIO_Port,FLASH_SS_Pin,GPIO_PIN_RESET);
+	flash_SpiTX(GETSTATUS_COMMAND);
+	StatusRegister1 = flash_SpiTX(W25Q_DUMMY_BYTE);
+	HAL_GPIO_WritePin(FLASH_SS_GPIO_Port,FLASH_SS_Pin,GPIO_PIN_SET);
+	return StatusRegister1;
+//	while ((StatusRegister1 & 0x01) == 0x01);
+}
+
+void flash_ChipErase(void)
+{
+	flash_WriteEnable();
+	HAL_GPIO_WritePin(FLASH_SS_GPIO_Port,FLASH_SS_Pin,GPIO_PIN_RESET);
+	flash_SpiTX(CHIP_ERASE_COMMAND);
+	HAL_GPIO_WritePin(FLASH_SS_GPIO_Port,FLASH_SS_Pin,GPIO_PIN_SET);
+	HAL_Delay(1);
+}
+

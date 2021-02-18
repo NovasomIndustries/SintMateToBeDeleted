@@ -77,7 +77,7 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="Src/SintMate/Images/Buttons/start_button.c|Src/SintMate/Images/Blue|Src/SintMate/SrcImages" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Core"/>
+						<entry excluding="Src/SintMate/Images/Yellow|Src/SintMate/Images/Red|Src/SintMate/Images/Logo|Src/SintMate/Images/Green|Src/SintMate/Images/Buttons|Src/SintMate/Images/Buttons/start_button.c|Src/SintMate/Images/Blue|Src/SintMate/SrcImages" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Core"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Drivers"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Middlewares"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="USB_DEVICE"/>
@@ -160,7 +160,7 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="Src/SintMate/Images/Buttons/start_button.c|Src/SintMate/Images/Blue|Src/SintMate/SrcImages" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Core"/>
+						<entry excluding="Src/SintMate/Images/Yellow|Src/SintMate/Images/Red|Src/SintMate/Images/Logo|Src/SintMate/Images/Green|Src/SintMate/Images/Buttons|Src/SintMate/Images/Buttons/start_button.c|Src/SintMate/Images/Blue|Src/SintMate/SrcImages" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Core"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Drivers"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Middlewares"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="USB_DEVICE"/>

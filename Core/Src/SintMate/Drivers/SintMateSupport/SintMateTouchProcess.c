@@ -9,7 +9,6 @@
 
 uint32_t	settingsp, homep;
 
-#ifndef	WRITE
 static uint32_t play_stop_button_check(void)
 {
 	if (( SystemVar.touch_x > TOUCH_X0AREA_PLAYPAUSE) &&
@@ -118,4 +117,3 @@ uint32_t	ret_val=0;	// returns 1 only if system changes state from stop to run
 	}
 	return ret_val;
 }
-#endif
