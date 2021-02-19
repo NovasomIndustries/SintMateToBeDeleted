@@ -59,11 +59,80 @@ static uint32_t home_button_check(void)
 	return 0;
 }
 
+static uint32_t back_button_check(void)
+{
+	if (( SystemVar.touch_x > TOUCH_X0AREA_BACK) &&
+			( SystemVar.touch_x < TOUCH_X1AREA_BACK) &&
+			( SystemVar.touch_y > TOUCH_Y0AREA_BACK) &&
+			( SystemVar.touch_y < TOUCH_Y1AREA_BACK))
+		return 1;
+	return 0;
+}
+
 
 uint32_t SintMateTouchProcess(void)
 {
 uint32_t	ret_val=0;	// returns 1 only if system changes state from stop to run
 
+	switch(SystemVar.run_state)
+	{
+	case	RUN_STATE_RUNNING	:
+		if (play_stop_button_check() == 1)
+		{
+			SystemVar.run_state = RUN_STATE_IDLE;
+			DoStepperStop();
+			DrawIdleButtons();
+		}
+		break;
+	case	RUN_STATE_IDLE	:
+		if (play_stop_button_check() == 1)
+		{
+			DoSteps();
+			SystemVar.run_state = RUN_STATE_RUNNING;
+			ret_val = 1;
+			DrawPlayButtons();
+		}
+		if (increase_button_check() == 1)
+		{
+			if ( SystemVar.DownCounter < SystemParameters.max_running_time-10 )
+			{
+				SystemVar.DownCounter /=10;
+				SystemVar.DownCounter ++;
+				SystemVar.DownCounter *=10;
+			}
+			SetCounter(SystemVar.DownCounter, ILI9341_GREEN);
+			SystemVar.Session_DownCounter = SystemVar.DownCounter;
+		}
+		if (decrease_button_check() == 1)
+		{
+			if ( SystemVar.DownCounter >= 20 )
+			{
+				SystemVar.DownCounter /=10;
+				SystemVar.DownCounter --;
+				SystemVar.DownCounter *=10;
+			}
+			SetCounter(SystemVar.DownCounter, ILI9341_GREEN);
+			SystemVar.Session_DownCounter = SystemVar.DownCounter;
+
+		}
+		if (home_button_check() == 1)
+		{
+			homep++;
+		}
+		if (settings_button_check() == 1)
+		{
+			SystemVar.run_state = RUN_STATE_SETTINGS;
+			SettingsEnter();
+		}
+		break;
+	case	RUN_STATE_SETTINGS	:
+		if ( back_button_check() == 1)
+		{
+			SettingsExit();
+		}
+		break;
+	}
+	/*
 	if ( SystemVar.run_state == RUN_STATE_RUNNING)
 	{
 		if (play_stop_button_check() == 1)
@@ -78,7 +147,6 @@ uint32_t	ret_val=0;	// returns 1 only if system changes state from stop to run
 		if (play_stop_button_check() == 1)
 		{
 			DoSteps();
-
 			SystemVar.run_state = RUN_STATE_RUNNING;
 			ret_val = 1;
 			DrawPlayButtons();
@@ -106,14 +174,23 @@ uint32_t	ret_val=0;	// returns 1 only if system changes state from stop to run
 			SystemVar.Session_DownCounter = SystemVar.DownCounter;
 
 		}
-		if (settings_button_check() == 1)
-		{
-			settingsp++;
-		}
 		if (home_button_check() == 1)
 		{
 			homep++;
 		}
+		if (settings_button_check() == 1)
+		{
+			SystemVar.run_state = RUN_STATE_SETTINGS;
+			SettingsEnter();
+		}
+		if ( SystemVar.run_state == RUN_STATE_SETTINGS )
+		{
+			if ( back_button_check() == 1)
+			{
+				SettingsExit();
+			}
+		}
 	}
+	*/
 	return ret_val;
 }

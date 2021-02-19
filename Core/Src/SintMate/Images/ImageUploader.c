@@ -7,10 +7,19 @@
 
 #include "main.h"
 
+#define	BKG_BUF_SIZE_IN_BYTES	32768
 uint8_t		usb_uploader_tx_buf[64];
-extern	uint8_t CDC_Transmit_FS(uint8_t* Buf, uint16_t Len);
-uint8_t		image_buffer[LOGO_SIZE*2]; // the biggest one
+//uint8_t		image_buffer[LOGO_SIZE*2]; // the biggest one
+uint8_t		image_buffer[BKG_BUF_SIZE_IN_BYTES];
 uint32_t	usb_rxed_byte_count , usb_byte_count, usb_rx_index , usb_bytes_to_receive,restart_flag , stored_image;
+uint32_t	error=0;
+
+extern	uint8_t CDC_Transmit_FS(uint8_t* Buf, uint16_t Len);
+
+void usbusb_error(void)
+{
+	error++;
+}
 
 void ReceiveUSBPacket(void)
 {
@@ -34,6 +43,19 @@ uint32_t	i;
 		if ( usb_rx_index > usb_bytes_to_receive-1)
 		{
 			usb_rx_index = 0;
+			if ( strcmp ( (char *)SystemVar.usb_image_name , "Background") == 0 )
+			{
+				uint32_t	offset = SystemVar.usb_image_number * BKG_BUF_SIZE_IN_BYTES/2;
+				if ( i >= BKG_BUF_SIZE_IN_BYTES)
+					usbusb_error();
+				if ( usb_rx_index+offset >= ILI9341_WIDTH*ILI9341_HEIGHT)
+					usbusb_error();
+				for(i=0;i<usb_bytes_to_receive;i+=2)
+				{
+					BackGround[usb_rx_index+offset] = (image_buffer[i]<<8) | image_buffer[i+1];
+					usb_rx_index++;
+				}
+			}
 			if ( strcmp ( (char *)SystemVar.usb_image_name , "settings") == 0 )
 			{
 				bzero(Settings,ICONS_SIZE);
@@ -135,8 +157,6 @@ uint32_t	i;
 				}
 				SystemVar.usb_image_number = 0;
 			}
-
-
 			if ( strcmp ( (char *)SystemVar.usb_image_name , "SintMateLogo") == 0 )
 			{
 				bzero(SintmateLogo,LOGO_SIZE);
@@ -157,6 +177,38 @@ uint32_t	i;
 				}
 				SystemVar.usb_image_number = 0;
 			}
+
+			if ( strcmp ( (char *)SystemVar.usb_image_name , "arrowright") == 0 )
+			{
+				bzero(ArrowRight,ICONS_SIZE);
+				for(i=0;i<usb_bytes_to_receive;i+=2)
+				{
+					ArrowRight[usb_rx_index] = (image_buffer[i]<<8) | image_buffer[i+1];
+					usb_rx_index++;
+				}
+				SystemVar.usb_image_number = 0;
+			}
+			if ( strcmp ( (char *)SystemVar.usb_image_name , "arrowleft") == 0 )
+			{
+				bzero(ArrowLeft,ICONS_SIZE);
+				for(i=0;i<usb_bytes_to_receive;i+=2)
+				{
+					ArrowLeft[usb_rx_index] = (image_buffer[i]<<8) | image_buffer[i+1];
+					usb_rx_index++;
+				}
+				SystemVar.usb_image_number = 0;
+			}
+			if ( strcmp ( (char *)SystemVar.usb_image_name , "back") == 0 )
+			{
+				bzero(Back,BACK_SIZE);
+				for(i=0;i<usb_bytes_to_receive;i+=2)
+				{
+					Back[usb_rx_index] = (image_buffer[i]<<8) | image_buffer[i+1];
+					usb_rx_index++;
+				}
+				SystemVar.usb_image_number = 0;
+			}
+
 
 			/************************************************************************************/
 
@@ -232,6 +284,30 @@ uint32_t	i,j,base=0;
 		base = PLAY_BASE;
 	if ( strcmp ( (char *)SystemVar.usb_image_name , "stop") == 0 )
 		base = STOP_BASE;
+	if ( strcmp ( (char *)SystemVar.usb_image_name , "arrowleft") == 0 )
+		base = ARROWLEFT_BASE;
+	if ( strcmp ( (char *)SystemVar.usb_image_name , "arrowright") == 0 )
+		base = ARROWRIGHT_BASE;
+	if ( strcmp ( (char *)SystemVar.usb_image_name , "back") == 0 )
+		base = BACK2NORMAL_BASE;
+
+	if ( base == ARROWLEFT_BASE )
+	{
+		flash_EraseSector(base);
+		flash_EraseSector(base+1);
+	}
+	if ( base == ARROWRIGHT_BASE )
+	{
+		flash_EraseSector(base);
+		flash_EraseSector(base+1);
+	}
+	if ( base == BACK2NORMAL_BASE )
+	{
+		for(j=0;j<10;j++)
+		{
+			flash_EraseSector(base+j);
+		}
+	}
 
 	if (( base >= PLAY_BASE ) && ( base < STOP_BASE ))
 	{
@@ -336,6 +412,13 @@ uint32_t	i,j,base=0;
 		if ( strcmp ( (char *)SystemVar.usb_image_name , "decrease_disabled") == 0 )
 			flash_WriteBytes((uint8_t *)Decrease_disabled	,flash_SectorToAddress(DECREASE_DISABLED_BASE),ICONS_SIZE*2);
 	}
+	if ( base == ARROWLEFT_BASE )
+		flash_WriteBytes((uint8_t *)ArrowLeft 			,flash_SectorToAddress(ARROWLEFT_BASE),ICONS_SIZE*2);
+	if ( base == ARROWRIGHT_BASE )
+		flash_WriteBytes((uint8_t *)ArrowRight 			,flash_SectorToAddress(ARROWRIGHT_BASE),ICONS_SIZE*2);
+	if ( base == BACK2NORMAL_BASE )
+		flash_WriteBytes((uint8_t *)Back 				,flash_SectorToAddress(BACK2NORMAL_BASE),BACK_SIZE*2);
+
 
 	bzero(usb_uploader_tx_buf,64);
 	sprintf((char *)usb_uploader_tx_buf,"STORED %s\n",SystemVar.usb_image_name);
@@ -368,6 +451,8 @@ char		msg[32];
 	ILI9341_WriteString(20, 100, msg, Font_16x26, ILI9341_BLUE, ILI9341_BLACK);
 	HAL_Delay(1000);
 }
+
+#define CHUNK_SIZE      8192
 
 uint32_t ParseUSBPacket(void)
 {
@@ -405,6 +490,7 @@ char		item[32], size_label[32], usb_image_name[32];
 		{
 			sprintf((char *)usb_uploader_tx_buf,"DIGITOFF %s %d OK",SystemVar.usb_image_name,(int )SystemVar.usb_byte_count);
 		}
+
 		CDC_Transmit_FS(usb_uploader_tx_buf,strlen((char *)usb_uploader_tx_buf));
 		SystemVar.usb_rx_index  = 0;
 		SystemVar.usb_pkt_found = USB_RECEIVING_PACKET;
@@ -415,6 +501,38 @@ char		item[32], size_label[32], usb_image_name[32];
 
 	if ( pnum == 5 )
 	{
+		if ( strcmp(item,"BACKGROUND") == 0 )
+		{
+			if ( SystemVar.usb_image_number == 0 )
+				bzero(BackGround,LOGO_SIZE);
+			sprintf((char *)usb_uploader_tx_buf,"BACKGROUND %s %d %d OK",SystemVar.usb_image_name,(int )SystemVar.usb_byte_count,SystemVar.usb_image_number);
+			CDC_Transmit_FS(usb_uploader_tx_buf,strlen((char *)usb_uploader_tx_buf));
+			SystemVar.usb_rx_index  = 0;
+			SystemVar.usb_pkt_found = USB_RECEIVING_PACKET;
+			usb_rxed_byte_count = usb_byte_count = usb_rx_index = 0;
+			usb_bytes_to_receive = SystemVar.usb_byte_count/2;
+			return 0;
+		}
+
+		if ( strcmp(item,"STORE") == 0 )
+		{
+			/*
+			for(j=0;j<((ILI9341_WIDTH*ILI9341_HEIGHT*2)/SECTOR_SIZE)+1;j++)
+				flash_EraseSector(BACKGROUND_BASE+j);
+			flash_WriteBytes((uint8_t *)&BackGround ,flash_SectorToAddress(BACKGROUND_BASE),ILI9341_WIDTH*ILI9341_HEIGHT*2);
+			*/
+			ILI9341_DrawImage(0, 0, ILI9341_WIDTH, ILI9341_HEIGHT-1, BackGround);
+
+			sprintf((char *)usb_uploader_tx_buf,"STORED %s %d %d OK",SystemVar.usb_image_name,SystemVar.usb_image_number,(int )SystemVar.usb_byte_count);
+			CDC_Transmit_FS(usb_uploader_tx_buf,strlen((char *)usb_uploader_tx_buf));
+			SystemVar.usb_rx_index  = 0;
+			SystemVar.usb_pkt_found = USB_WAIT_FOR_HEADER;
+			usb_rxed_byte_count = usb_byte_count = usb_rx_index = 0;
+			usb_bytes_to_receive = SystemVar.usb_byte_count/2;
+			while(SystemVar.lcd_dma_busy == 1);
+			return 0;
+		}
+
 		if ( SystemVar.usb_image_number > 9 )
 		{
 			bzero(usb_uploader_tx_buf,64);
@@ -444,7 +562,7 @@ char		item[32], size_label[32], usb_image_name[32];
 	}
 
 	bzero(usb_uploader_tx_buf,64);
-	sprintf((char *)usb_uploader_tx_buf,"NOK pnum %d : %s\n",(int )pnum , (char *)SystemVar.usb_packet);
+	sprintf((char *)usb_uploader_tx_buf,"NOK pnum %d\n",(int )pnum );
 	CDC_Transmit_FS(usb_uploader_tx_buf,strlen((char *)usb_uploader_tx_buf));
 	SystemVar.usb_pkt_found = USB_WAIT_FOR_HEADER;
 	return 1;

@@ -72,6 +72,9 @@ extern uint16_t RedOFF[];
 #define  LOGO_WIDTH   240
 #define  LOGO_HEIGHT  42
 #define  LOGO_SIZE  10080
+#define  BACK_WIDTH   130
+#define  BACK_HEIGHT  64
+#define  BACK_SIZE  8320
 
 extern   uint16_t Red[10][DIGIT_SIZE];
 extern   uint16_t Green[10][DIGIT_SIZE];
@@ -80,17 +83,6 @@ extern   uint16_t Blue[10][DIGIT_SIZE];
 extern   uint16_t White[10][DIGIT_SIZE];
 extern   uint16_t DigitOFF[DIGIT_SIZE];
 extern   uint16_t SintmateLogo[LOGO_SIZE];
-
-extern   uint16_t increase[];
-extern   uint16_t decrease[];
-extern   uint16_t increase_disabled[];
-extern   uint16_t decrease_disabled[];
-extern   uint16_t home[];
-extern   uint16_t settings[];
-extern   uint16_t home_disabled[];
-extern   uint16_t settings_disabled[];
-extern   uint16_t play[];
-extern   uint16_t stop[];
 
 extern   uint16_t Increase[];
 extern   uint16_t Decrease[];
@@ -102,5 +94,8 @@ extern   uint16_t Home_disabled[];
 extern   uint16_t Settings_disabled[];
 extern   uint16_t play[];
 extern   uint16_t stop[];
-
+extern   uint16_t BackGround[];
+extern	 uint16_t ArrowLeft[];
+extern	 uint16_t ArrowRight[];
+extern	 uint16_t Back[];
 #endif /*INC_SINTMATE_DIGIT_H_ */

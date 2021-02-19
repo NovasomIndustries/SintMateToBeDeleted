@@ -56,6 +56,11 @@ SECTIONS
     *(.digit_buffers*)
   } > RAM_D2
   
+    .xdigit_buffers(NOLOAD) : {
+    . = ALIGN(4);
+    *(.xdigit_buffers*)
+  } > RAM_D3
+  
   /* The startup code into "FLASH" Rom type memory */
   .isr_vector :
   {

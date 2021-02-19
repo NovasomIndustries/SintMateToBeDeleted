@@ -8,24 +8,11 @@
 #include "main.h"
 #include "Digits.h"
 
-#define	DIGITRED_IDX		0
-#define	DIGITGREEN_IDX		1
-#define	DIGITYELLOW_IDX		2
-#define	DIGIT_TYPESNUMBER	3
+__attribute__ ((aligned (16)))	uint16_t BackGround[ILI9341_WIDTH*ILI9341_HEIGHT];
 
-
-#ifdef	DIGIT_GREEN
-DIGIT_BUFFERS		__attribute__ ((aligned (16)))	  uint16_t Green[10][DIGIT_SIZE];
-//__attribute__	((aligned (16)))	uint16_t Green[10][DIGIT_SIZE];
-#endif
-#ifdef	DIGIT_RED
-//__attribute__ ((aligned (16)))	uint16_t Red[10][DIGIT_SIZE];
-DIGIT_BUFFERS		__attribute__ ((aligned (16)))	uint16_t Red[10][DIGIT_SIZE];
-#endif
-#ifdef	DIGIT_YELLOW
-//__attribute__ ((aligned (16)))	uint16_t Yellow[10][DIGIT_SIZE];
-DIGIT_BUFFERS		__attribute__ ((aligned (16)))	uint16_t Yellow[10][DIGIT_SIZE];
-#endif
+DIGIT_BUFFERS	__attribute__ ((aligned (16)))	uint16_t Green[10][DIGIT_SIZE];
+DIGIT_BUFFERS	__attribute__ ((aligned (16)))	uint16_t Red[10][DIGIT_SIZE];
+DIGIT_BUFFERS	__attribute__ ((aligned (16)))	uint16_t Yellow[10][DIGIT_SIZE];
 DIGIT_BUFFERS 	__attribute__ ((aligned (16)))	uint16_t DigitOFF[DIGIT_SIZE];
 DIGIT_BUFFERS	__attribute__ ((aligned (16)))	uint16_t play[BUTTONS_SIZE];
 DIGIT_BUFFERS	__attribute__ ((aligned (16)))	uint16_t stop[BUTTONS_SIZE];
@@ -34,10 +21,13 @@ DIGIT_BUFFERS	__attribute__ ((aligned (16)))	uint16_t Increase[ICONS_SIZE];
 DIGIT_BUFFERS	__attribute__ ((aligned (16)))	uint16_t Increase_disabled[ICONS_SIZE];
 DIGIT_BUFFERS	__attribute__ ((aligned (16)))	uint16_t Decrease[ICONS_SIZE];
 DIGIT_BUFFERS	__attribute__ ((aligned (16)))	uint16_t Decrease_disabled[ICONS_SIZE];
-DIGIT_BUFFERS	__attribute__ ((aligned (16)))	uint16_t Settings[ICONS_SIZE];
-DIGIT_BUFFERS	__attribute__ ((aligned (16)))	uint16_t Settings_disabled[ICONS_SIZE];
-DIGIT_BUFFERS	__attribute__ ((aligned (16)))	uint16_t Home[ICONS_SIZE];
-DIGIT_BUFFERS	__attribute__ ((aligned (16)))	uint16_t Home_disabled[ICONS_SIZE];
+XDIGIT_BUFFERS	__attribute__ ((aligned (16)))	uint16_t Settings[ICONS_SIZE];
+XDIGIT_BUFFERS	__attribute__ ((aligned (16)))	uint16_t Settings_disabled[ICONS_SIZE];
+XDIGIT_BUFFERS	__attribute__ ((aligned (16)))	uint16_t Home[ICONS_SIZE];
+XDIGIT_BUFFERS	__attribute__ ((aligned (16)))	uint16_t Home_disabled[ICONS_SIZE];
+XDIGIT_BUFFERS	__attribute__ ((aligned (16)))	uint16_t ArrowLeft[ICONS_SIZE];
+XDIGIT_BUFFERS	__attribute__ ((aligned (16)))	uint16_t ArrowRight[ICONS_SIZE];
+XDIGIT_BUFFERS	__attribute__ ((aligned (16)))	uint16_t Back[BACK_SIZE];
 
 void GetDigitsFromFlash(void)
 {
@@ -59,7 +49,11 @@ uint32_t i;
 	flash_ReadBytes((uint8_t*)&Settings_disabled[0], 	flash_SectorToAddress(SETTINGS_DISABLED_BASE), ICONS_SIZE*2);
 	flash_ReadBytes((uint8_t*)&Home[0], 				flash_SectorToAddress(HOME_BASE), ICONS_SIZE*2);
 	flash_ReadBytes((uint8_t*)&Home_disabled[0], 		flash_SectorToAddress(HOME_DISABLED_BASE), ICONS_SIZE*2);
+	flash_ReadBytes((uint8_t*)&ArrowLeft[0], 			flash_SectorToAddress(ARROWLEFT_BASE), ICONS_SIZE*2);
+	flash_ReadBytes((uint8_t*)&ArrowRight[0], 			flash_SectorToAddress(ARROWRIGHT_BASE), ICONS_SIZE*2);
 	flash_ReadBytes((uint8_t*)&play[0], 				flash_SectorToAddress(PLAY_BASE), BUTTONS_SIZE*2);
 	flash_ReadBytes((uint8_t*)&stop[0], 				flash_SectorToAddress(STOP_BASE), BUTTONS_SIZE*2);
+	flash_ReadBytes((uint8_t*)&BackGround[0], 			flash_SectorToAddress(BACKGROUND_BASE), ILI9341_WIDTH*ILI9341_HEIGHT*2);
+	flash_ReadBytes((uint8_t*)&Back[0], 				flash_SectorToAddress(BACK2NORMAL_BASE), BACK_SIZE*2);
 }
 

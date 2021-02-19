@@ -15,8 +15,9 @@
 #define HEADER_SIZE 14
 #define INFO_HEADER_SIZE 40
 
-unsigned short  bmpfile[32768],image[32768];
-unsigned char   ascii_image[131072];
+#define BUF_SIZE    131072
+unsigned short  bmpfile[BUF_SIZE],image[BUF_SIZE];
+unsigned char   ascii_image[BUF_SIZE*4];
 int             bmp_len;
 FILE            *fpin;
 

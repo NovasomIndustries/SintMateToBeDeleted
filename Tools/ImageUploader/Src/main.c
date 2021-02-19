@@ -125,7 +125,7 @@ int     size_in_bytes,j,pnum,rxed,ret_val;
 char    rx_string[32],button_name[32];
 char    file_in[128];
 
-    for(j=0;j<10;j++)
+    for(j=0;j<13;j++)
     {
         switch(j)
         {
@@ -139,6 +139,9 @@ char    file_in[128];
         case    7   :   sprintf(button_name,"increase_disabled");break;
         case    8   :   sprintf(button_name,"decrease");break;
         case    9   :   sprintf(button_name,"decrease_disabled");break;
+        case   10   :   sprintf(button_name,"arrowleft");break;
+        case   11   :   sprintf(button_name,"arrowright");break;
+        case   12   :   sprintf(button_name,"back");break;
         }
 
         sprintf(file_in,"%s/%s.bmp",folder,button_name);
@@ -244,6 +247,106 @@ char    file_in[128];
     return 0;
 }
 
+int get_background_file(char *background_name,char *folder)
+{
+int     size_in_bytes;
+char    file_in[128];
+    sprintf(file_in,"%s/%s.bmp",folder,background_name);
+    size_in_bytes = read_and_convert(file_in);
+    if ( size_in_bytes == -1 )
+    {
+        printf("Background %s not found\n",background_name);
+        return -1;
+    }
+    return size_in_bytes;
+}
+
+int send_background_cmd(int serial_port,char *background_name,int size_in_bytes,int chunk_number)
+{
+int     pnum,rxed,chunk_rxed,ret_val;
+char    rx_string[32];
+
+    bzero(tx_buf,BUFSIZE);
+    sprintf(tx_buf,"<BACKGROUND %s SIZE %d %d>",background_name,size_in_bytes,chunk_number);
+    if ( serial_tx_rx_command(serial_port,tx_buf,rx_buf) != -1 )
+    {
+        pnum = sscanf(rx_buf,"BACKGROUND %s %d %d OK",rx_string,&rxed,&chunk_rxed);
+        if ( pnum == 3)
+        {
+            printf("Background %s accepted, chunk %d size %d\n",rx_string,chunk_rxed, rxed);
+            ret_val = serial_tx_rx(serial_port,(char *)ascii_image,size_in_bytes,rx_buf,background_name);
+            if ( ret_val == -1 )
+            {
+                printf("Error sending %s chunk %d\n", background_name,chunk_number);
+                printf("Reply : %s\n", rx_buf);
+                return -1;
+            }
+            return 0;
+        }
+    }
+    return -1;
+}
+
+int send_background_write(int serial_port,char *background_name,int chunk_number,int number_of_bytes)
+{
+char    rx_string[32];
+int     pnum,rxed,rxnumber_of_bytes;
+
+    printf("Writing %s\n",background_name);
+    sprintf(tx_buf,"<STORE %s FLASH %d %d>",background_name,number_of_bytes,chunk_number);
+    if ( serial_tx_rx_command(serial_port,tx_buf,rx_buf) != -1 )
+    {
+        pnum = sscanf(rx_buf,"STORED %s %d %d",rx_string,&rxed,&rxnumber_of_bytes);
+        if ( pnum == 3)
+        {
+            printf("Background %s written %d bytes\n", background_name,rxnumber_of_bytes);
+            return 0;
+        }
+        else
+        {
+            printf("Error writing background %s chunk %d\n", background_name,chunk_number);
+            printf("Reply : %s\n", rx_buf);
+        }
+    }
+    return -1;
+}
+
+#define CHUNK_SIZE      16384
+int send_background(int serial_port,char *folder)
+{
+int     size_in_bytes,chunk_number,chunk;
+char    background_name[32];
+
+    sprintf(background_name,"Background");
+    if ( (size_in_bytes = get_background_file(background_name,folder) ) == -1 )
+    {
+        return -1;
+    }
+    chunk = size_in_bytes;
+    chunk_number = 0;
+    printf("chunk %d , number of chunks %d\n",chunk,size_in_bytes/CHUNK_SIZE+1);
+
+    while(chunk > CHUNK_SIZE)
+    {
+        if ( send_background_cmd(serial_port,background_name,CHUNK_SIZE,chunk_number) != -1)
+            printf("Sent chunk %d\n",chunk_number);
+        else
+        {
+            printf("Error on chunk %d\n",chunk_number);
+            return -1;
+        }
+        chunk -= CHUNK_SIZE;
+        chunk_number++;
+    }
+    if ( send_background_cmd(serial_port,background_name,chunk,chunk_number) == -1)
+    {
+            return -1;
+    }
+    if ( send_background_write(serial_port,background_name,chunk_number,CHUNK_SIZE) == -1)
+            return -1;
+    return 0;
+}
+
 int send_erasecmd(int serial_port)
 {
 int pnum=0, time_elapsed;
@@ -264,22 +367,23 @@ int pnum=0, time_elapsed;
 
 void usage(void)
 {
-    printf("ImageUploader -f <images_path> [-a all][-d digits only][-b buttons only][-l logo only]\n");
+    printf("ImageUploader -f <images_path> [-a all][-d digits only][-b buttons only][-l logo only][-B background only]\n");
     printf("ImageUploader -E Erases ALL flash!!\n");
 }
 
 int main(int argc, char **argv)
 {
-int serial_port,i,digit=0,buttons=0,logo=0,all=0,erase=0;
+int serial_port,i,digit=0,buttons=0,logo=0,all=0,erase=0,background=0;
 char   *folder=NULL;
 
-    while ((i = getopt (argc, argv, "f:dblaE")) != -1)
+    while ((i = getopt (argc, argv, "f:dblaEB")) != -1)
     switch (i)
     {
         case 'f':   folder = optarg;   break;
         case 'd':   digit = 1;   break;
         case 'b':   buttons = 1;   break;
         case 'l':   logo = 1;   break;
+        case 'B':   background = 1;   break;
         case 'a':   digit = buttons = logo = 1;   break;
         case 'E':   erase = 1;   break;
         default:    usage();return -1;
@@ -291,8 +395,14 @@ char   *folder=NULL;
             usage();
             return -1;
         }
-        if ((digit ==0) && (buttons == 0)&&( logo == 0) && (all==0))
+        if ((digit ==0) && (buttons == 0)&&( logo == 0) && (all==0)&& (background==0))
+//            digit = buttons = logo = background = 1;
             digit = buttons = logo = 1;
+    }
+    if (background==1)
+    {
+        printf("Not yet implemented\n");
+        return 0;
     }
 
     serial_port = serial_open(SERIAL_DEVICE);
@@ -303,6 +413,8 @@ char   *folder=NULL;
         send_buttons(serial_port,folder);
     if (logo==1)
         send_logo(serial_port,folder);
+    if (background==1)
+        send_background(serial_port,folder);
     if (erase==1)
         send_erasecmd(serial_port);
 

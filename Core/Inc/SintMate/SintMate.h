@@ -25,15 +25,15 @@
 #include "SintMateTouchProcess.h"
 #include "StepperDriver.h"
 #include "ImageUploader.h"
-
-/* setting WRITE means nothing runs excluding the flash process */
-//#define	WRITE	1
+#include "ws2812b.h"
+#include "SintMateSettings.h"
 
 #define	SintMateNAME		"SintMate"
 #define	SintMateVERSION		"0.0.1"
 #define	LOGO_Y_POS			10
 
 #define 	DIGIT_BUFFERS 		__attribute__((section(".digit_buffers" ".noinit")))
+#define 	XDIGIT_BUFFERS 		__attribute__((section(".xdigit_buffers" ".noinit")))
 
 extern	TIM_HandleTypeDef htim8;
 extern	TIM_HandleTypeDef htim16;
@@ -60,6 +60,7 @@ typedef struct _SystemParametersTypeDef
 	char					Header[16];
 	char					Version[16];
 	uint32_t 				step_rpm;
+	uint32_t 				max_running_time;
 	uint32_t 				flash_capacity;
 	uint32_t 				touch_is_calibrated;	// 0 not calibrated, !=0 calibrated
 	uint32_t 				touch_x_minimum;

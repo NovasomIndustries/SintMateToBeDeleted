@@ -15,17 +15,18 @@ void SintMate_SystemSetDefaults(void)
 	sprintf(SystemParameters.Header,SintMateNAME);
 	sprintf(SystemParameters.Version,SintMateVERSION);
 	SystemParameters.step_rpm = STEP_SPEED_RPM;
+	SystemParameters.max_running_time = DOWNCOUNTER_MAX;
 }
 
 extern	uint16_t Logo[];
 
 void Init_SintMate(void)
 {
-uint32_t	i;
 	ILI9341_Init();
 	ILI9341_FillScreen(ILI9341_BLACK);
 	HAL_TIM_PWM_Start(&BACKLIGHT_TIMER, BACKLIGHT_TIMER_CHANNEL);
 	SetupFlash();
+	//SystemParameters.touch_is_calibrated = 0;
 	if ( SystemParameters.touch_is_calibrated == 0 )
 	{
 		HAL_TIM_Base_Start_IT(&htim7);
@@ -35,15 +36,13 @@ uint32_t	i;
 		HAL_Delay(200);
 	}
 
+	SystemVar.Session_DownCounter = INITIAL_DOWNCOUNTER_VALUE;
 	GetDigitsFromFlash();
 	ILI9341_DrawImage(0, 0, LOGO_WIDTH, LOGO_HEIGHT-1, SintmateLogo);
 	while(SystemVar.lcd_dma_busy == 1);
-
-	SystemVar.Session_DownCounter = INITIAL_DOWNCOUNTER_VALUE;
-	SystemVar.run_state = RUN_STATE_IDLE;
-
 	InitCounter();
 	DrawIdleButtons();
+	SystemVar.run_state = RUN_STATE_IDLE;
 	StepperInit();
 	WS2812_LedsOff();
 	HAL_TIM_Base_Start_IT(&TICK100MS_TIMER);
@@ -69,5 +68,8 @@ void SintMateLoop(void)
 		USB_ImageUploader();
 		SystemVar.usb_packet_ready = 0;
 	}
+	if (SystemVar.run_state == RUN_STATE_SETTINGS)
+		SettingsLoop();
+
 }
 
