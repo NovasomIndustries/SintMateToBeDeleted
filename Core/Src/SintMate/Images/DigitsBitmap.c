@@ -25,8 +25,8 @@ XDIGIT_BUFFERS	__attribute__ ((aligned (16)))	uint16_t Settings[ICONS_SIZE];
 XDIGIT_BUFFERS	__attribute__ ((aligned (16)))	uint16_t Settings_disabled[ICONS_SIZE];
 XDIGIT_BUFFERS	__attribute__ ((aligned (16)))	uint16_t Home[ICONS_SIZE];
 XDIGIT_BUFFERS	__attribute__ ((aligned (16)))	uint16_t Home_disabled[ICONS_SIZE];
-XDIGIT_BUFFERS	__attribute__ ((aligned (16)))	uint16_t ArrowLeft[ICONS_SIZE];
-XDIGIT_BUFFERS	__attribute__ ((aligned (16)))	uint16_t ArrowRight[ICONS_SIZE];
+XDIGIT_BUFFERS	__attribute__ ((aligned (16)))	uint16_t Plus[ICONS_SIZE];
+XDIGIT_BUFFERS	__attribute__ ((aligned (16)))	uint16_t Minus[ICONS_SIZE];
 XDIGIT_BUFFERS	__attribute__ ((aligned (16)))	uint16_t Back[BACK_SIZE];
 
 void GetDigitsFromFlash(void)
@@ -49,8 +49,8 @@ uint32_t i;
 	flash_ReadBytes((uint8_t*)&Settings_disabled[0], 	flash_SectorToAddress(SETTINGS_DISABLED_BASE), ICONS_SIZE*2);
 	flash_ReadBytes((uint8_t*)&Home[0], 				flash_SectorToAddress(HOME_BASE), ICONS_SIZE*2);
 	flash_ReadBytes((uint8_t*)&Home_disabled[0], 		flash_SectorToAddress(HOME_DISABLED_BASE), ICONS_SIZE*2);
-	flash_ReadBytes((uint8_t*)&ArrowLeft[0], 			flash_SectorToAddress(ARROWLEFT_BASE), ICONS_SIZE*2);
-	flash_ReadBytes((uint8_t*)&ArrowRight[0], 			flash_SectorToAddress(ARROWRIGHT_BASE), ICONS_SIZE*2);
+	flash_ReadBytes((uint8_t*)&Minus[0], 				flash_SectorToAddress(MINUS_BASE), ICONS_SIZE*2);
+	flash_ReadBytes((uint8_t*)&Plus[0], 				flash_SectorToAddress(PLUS_BASE), ICONS_SIZE*2);
 	flash_ReadBytes((uint8_t*)&play[0], 				flash_SectorToAddress(PLAY_BASE), BUTTONS_SIZE*2);
 	flash_ReadBytes((uint8_t*)&stop[0], 				flash_SectorToAddress(STOP_BASE), BUTTONS_SIZE*2);
 	flash_ReadBytes((uint8_t*)&BackGround[0], 			flash_SectorToAddress(BACKGROUND_BASE), ILI9341_WIDTH*ILI9341_HEIGHT*2);

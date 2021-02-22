@@ -26,8 +26,8 @@
 #define	HOME_BASE				0x10c
 #define	HOME_DISABLED_BASE		0x10e
 
-#define	ARROWLEFT_BASE			0x110
-#define	ARROWRIGHT_BASE			0x112
+#define	PLUS_BASE				0x110
+#define	MINUS_BASE				0x112
 #define	BACK2NORMAL_BASE		0x114
 
 #define	PLAY_BASE				0x120

@@ -95,7 +95,7 @@ extern   uint16_t Settings_disabled[];
 extern   uint16_t play[];
 extern   uint16_t stop[];
 extern   uint16_t BackGround[];
-extern	 uint16_t ArrowLeft[];
-extern	 uint16_t ArrowRight[];
+extern	 uint16_t Plus[];
+extern	 uint16_t Minus[];
 extern	 uint16_t Back[];
 #endif /*INC_SINTMATE_DIGIT_H_ */

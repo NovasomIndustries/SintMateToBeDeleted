@@ -139,8 +139,8 @@ char    file_in[128];
         case    7   :   sprintf(button_name,"increase_disabled");break;
         case    8   :   sprintf(button_name,"decrease");break;
         case    9   :   sprintf(button_name,"decrease_disabled");break;
-        case   10   :   sprintf(button_name,"arrowleft");break;
-        case   11   :   sprintf(button_name,"arrowright");break;
+        case   10   :   sprintf(button_name,"plus");break;
+        case   11   :   sprintf(button_name,"minus");break;
         case   12   :   sprintf(button_name,"back");break;
         }
 

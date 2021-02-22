@@ -178,22 +178,22 @@ uint32_t	i;
 				SystemVar.usb_image_number = 0;
 			}
 
-			if ( strcmp ( (char *)SystemVar.usb_image_name , "arrowright") == 0 )
+			if ( strcmp ( (char *)SystemVar.usb_image_name , "plus") == 0 )
 			{
-				bzero(ArrowRight,ICONS_SIZE);
+				bzero(Plus,ICONS_SIZE);
 				for(i=0;i<usb_bytes_to_receive;i+=2)
 				{
-					ArrowRight[usb_rx_index] = (image_buffer[i]<<8) | image_buffer[i+1];
+					Plus[usb_rx_index] = (image_buffer[i]<<8) | image_buffer[i+1];
 					usb_rx_index++;
 				}
 				SystemVar.usb_image_number = 0;
 			}
-			if ( strcmp ( (char *)SystemVar.usb_image_name , "arrowleft") == 0 )
+			if ( strcmp ( (char *)SystemVar.usb_image_name , "minus") == 0 )
 			{
-				bzero(ArrowLeft,ICONS_SIZE);
+				bzero(Minus,ICONS_SIZE);
 				for(i=0;i<usb_bytes_to_receive;i+=2)
 				{
-					ArrowLeft[usb_rx_index] = (image_buffer[i]<<8) | image_buffer[i+1];
+					Minus[usb_rx_index] = (image_buffer[i]<<8) | image_buffer[i+1];
 					usb_rx_index++;
 				}
 				SystemVar.usb_image_number = 0;
@@ -284,19 +284,19 @@ uint32_t	i,j,base=0;
 		base = PLAY_BASE;
 	if ( strcmp ( (char *)SystemVar.usb_image_name , "stop") == 0 )
 		base = STOP_BASE;
-	if ( strcmp ( (char *)SystemVar.usb_image_name , "arrowleft") == 0 )
-		base = ARROWLEFT_BASE;
-	if ( strcmp ( (char *)SystemVar.usb_image_name , "arrowright") == 0 )
-		base = ARROWRIGHT_BASE;
+	if ( strcmp ( (char *)SystemVar.usb_image_name , "minus") == 0 )
+		base = MINUS_BASE;
+	if ( strcmp ( (char *)SystemVar.usb_image_name , "plus") == 0 )
+		base = PLUS_BASE;
 	if ( strcmp ( (char *)SystemVar.usb_image_name , "back") == 0 )
 		base = BACK2NORMAL_BASE;
 
-	if ( base == ARROWLEFT_BASE )
+	if ( base == MINUS_BASE )
 	{
 		flash_EraseSector(base);
 		flash_EraseSector(base+1);
 	}
-	if ( base == ARROWRIGHT_BASE )
+	if ( base == PLUS_BASE )
 	{
 		flash_EraseSector(base);
 		flash_EraseSector(base+1);
@@ -412,10 +412,10 @@ uint32_t	i,j,base=0;
 		if ( strcmp ( (char *)SystemVar.usb_image_name , "decrease_disabled") == 0 )
 			flash_WriteBytes((uint8_t *)Decrease_disabled	,flash_SectorToAddress(DECREASE_DISABLED_BASE),ICONS_SIZE*2);
 	}
-	if ( base == ARROWLEFT_BASE )
-		flash_WriteBytes((uint8_t *)ArrowLeft 			,flash_SectorToAddress(ARROWLEFT_BASE),ICONS_SIZE*2);
-	if ( base == ARROWRIGHT_BASE )
-		flash_WriteBytes((uint8_t *)ArrowRight 			,flash_SectorToAddress(ARROWRIGHT_BASE),ICONS_SIZE*2);
+	if ( base == MINUS_BASE )
+		flash_WriteBytes((uint8_t *)Minus 				,flash_SectorToAddress(MINUS_BASE),ICONS_SIZE*2);
+	if ( base == PLUS_BASE )
+		flash_WriteBytes((uint8_t *)Plus	 			,flash_SectorToAddress(PLUS_BASE),ICONS_SIZE*2);
 	if ( base == BACK2NORMAL_BASE )
 		flash_WriteBytes((uint8_t *)Back 				,flash_SectorToAddress(BACK2NORMAL_BASE),BACK_SIZE*2);
 

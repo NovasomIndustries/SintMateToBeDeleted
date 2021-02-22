@@ -15,7 +15,7 @@ void SintMate_SystemSetDefaults(void)
 	sprintf(SystemParameters.Header,SintMateNAME);
 	sprintf(SystemParameters.Version,SintMateVERSION);
 	SystemParameters.step_rpm = STEP_SPEED_RPM;
-	SystemParameters.max_running_time = DOWNCOUNTER_MAX;
+	SystemParameters.max_running_time = DOWNCOUNTER_TYP;
 }
 
 extern	uint16_t Logo[];
@@ -36,7 +36,7 @@ void Init_SintMate(void)
 		HAL_Delay(200);
 	}
 
-	SystemVar.Session_DownCounter = INITIAL_DOWNCOUNTER_VALUE;
+	SystemVar.Session_DownCounter = SystemParameters.max_running_time;
 	GetDigitsFromFlash();
 	ILI9341_DrawImage(0, 0, LOGO_WIDTH, LOGO_HEIGHT-1, SintmateLogo);
 	while(SystemVar.lcd_dma_busy == 1);

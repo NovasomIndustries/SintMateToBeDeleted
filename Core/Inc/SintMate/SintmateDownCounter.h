@@ -21,6 +21,7 @@
 #define	DOWNCOUNTER_RED_THRESHOLD				10
 
 #define	DOWNCOUNTER_MAX							180
+#define	DOWNCOUNTER_TYP							120
 #define	DOWNCOUNTER_MIN							10
 
 extern	void Tim100MSec_callback(void);
