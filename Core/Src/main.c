@@ -128,6 +128,7 @@ int main(void)
   while (1)
   {
 	  SintMateLoop();
+
 	  //DoNumberOfSteps(4);
 	  /*
 		HAL_TIM_OC_Start(&htim16, TIM_CHANNEL_1);
